@@ -4,11 +4,14 @@ import urllib.parse
 import xmlrpc.client
 from collections.abc import Iterator
 from pathlib import Path
-from typing import Any, NotRequired, TypedDict, Literal
+from typing import Any, TypedDict, Literal, TypeAlias
 
 from rtorrent_xmlrpc import SCGIServerProxy
+from typing_extensions import NotRequired
 
 __all__ = ["RTorrent"]
+
+Unknown: TypeAlias = Any
 
 
 class _MultiCall(TypedDict):
@@ -16,17 +19,15 @@ class _MultiCall(TypedDict):
     params: NotRequired[Any]
 
 
-def _encode_tags(tags: list[str] | None):
+def _encode_tags(tags: list[str] | None) -> str:
     if not tags:
         return ""
 
-    tags = {x.strip() for x in tags}
-
-    return ",".join(urllib.parse.quote(t) for t in tags if t)
+    return ",".join(urllib.parse.quote(t) for t in {x.strip() for x in tags} if t)
 
 
 class _DownloadRpc(typing.Protocol):
-    def save_resume(self, h: str) -> None:
+    def save_resume(self, info_hash: str) -> None:
         ...
 
     def multicall2(self, _: Literal[""], vide: str, *commands: str) -> Any:
@@ -49,7 +50,7 @@ class RTorrent:
         content: bytes,
         directory: str,
         tags: list[str] | None = None,
-    ):
+    ) -> None:
         params = [
             "",
             content,
@@ -63,24 +64,24 @@ class RTorrent:
 
         self.rpc.load.raw_start_verbose(*params)
 
-    def stop_torrent(self, hash: str):
+    def stop_torrent(self, info_hash: str) -> None:
         self.rpc.system.multicall(
             [
-                _MultiCall(methodName="d.stop", params=[hash]),
-                _MultiCall(methodName="d.close", params=[hash]),
+                _MultiCall(methodName="d.stop", params=[info_hash]),
+                _MultiCall(methodName="d.close", params=[info_hash]),
             ]
         )
 
-    def start_torrent(self, hash: str):
+    def start_torrent(self, info_hash: str) -> None:
         self.rpc.system.multicall(
             [
-                _MultiCall(methodName="d.open", params=[hash]),
-                _MultiCall(methodName="d.start", params=[hash]),
+                _MultiCall(methodName="d.open", params=[info_hash]),
+                _MultiCall(methodName="d.start", params=[info_hash]),
             ]
         )
 
-    def set_torrent_base_directory(self, hash: str, directory: str):
-        self.rpc.d.directory_base.set(hash, directory)
+    def set_torrent_base_directory(self, info_hash: str, directory: str) -> None:
+        self.rpc.d.directory_base.set(info_hash, directory)
 
     def download_list(self) -> list[str]:
         return self.rpc.download_list()
@@ -88,19 +89,19 @@ class RTorrent:
     def system_list_methods(self) -> list[str]:
         return self.rpc.system.listMethods()
 
-    def d_tracker_send_scrape(self, h: str, delay):
-        return self.rpc.d.tracker.send_scrape(h, delay)
+    def d_tracker_send_scrape(self, info_hash: str, delay: Unknown) -> None:
+        return self.rpc.d.tracker.send_scrape(info_hash, delay)
 
     @property
     def d(self) -> _DownloadRpc:
         return self.rpc.d
 
-    def d_save_resume(self, h: str):
-        return self.rpc.d.save_resume(h)
+    def d_save_resume(self, info_hash: str) -> None:
+        return self.rpc.d.save_resume(info_hash)
 
-    def d_set_tags(self, hash: str, tags: Iterator[str]):
+    def d_set_tags(self, info_hash: str, tags: Iterator[str]) -> None:
         """set download tags"""
-        self.rpc.d.custom1.set(hash, ",".join(tags))
+        self.rpc.d.custom1.set(info_hash, ",".join(tags))
 
 
 _methods = [

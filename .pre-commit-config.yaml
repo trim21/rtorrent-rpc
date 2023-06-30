@@ -15,7 +15,6 @@ repos:
       - id: check-case-conflict
       - id: check-ast
       - id: check-builtin-literals
-      - id: check-byte-order-marker
       - id: check-toml
       - id: check-yaml
       - id: check-json
@@ -27,6 +26,7 @@ repos:
       - id: mixed-line-ending
         args: [--fix=lf]
       - id: end-of-file-fixer
+      - id: fix-byte-order-marker
       - id: fix-encoding-pragma
         args: [--remove]
 
@@ -34,7 +34,7 @@ repos:
     rev: v3.4.0
     hooks:
       - id: pyupgrade
-        args: [--py37-plus]
+        args: [--py310-plus]
 
   - repo: https://github.com/PyCQA/autoflake
     rev: v2.1.1
