@@ -20,11 +20,10 @@ classifiers = [
     'Programming Language :: Python :: 3.10',
     'Programming Language :: Python :: 3.11',
     'Programming Language :: Python :: Implementation :: CPython',
-    'Programming Language :: Python :: Implementation :: PyPy',
 ]
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.10"
 # dependencies
 typing-extensions = ">=4.1.0"
 rtorrent-xmlrpc = "^0.0.3"
@@ -49,17 +48,6 @@ ruff = "0.0.275"
 [tool.poetry-plugin-bump]
 commit_msg = 'bump: v{version}'
 
-[tool.isort]
-default_section = 'THIRDPARTY'
-indent = '    '
-profile = 'black'
-known_first_party = 'transmission_rpc'
-length_sort = true
-line_length = 120
-no_lines_before = 'LOCALFOLDER'
-use_parentheses = true
-include_trailing_comma = true
-
 [tool.pytest.ini_options]
 addopts = '-rav -Werror'
 
@@ -72,13 +60,11 @@ warn_unused_configs = true
 show_error_codes = true
 
 [tool.black]
-line-length = 120
-target-version = ['py37']
+target-version = ['py310']
 
 
 [tool.ruff]
 extend-exclude = ["docs"]
-line-length = 120
 select = [
     "B",
     "C",
@@ -128,9 +114,7 @@ ignore = [
     'N815',
     'S104',
     'C901',
-    'ISC003',
     'PLR0913',
-    'I001',
     'RUF001',
     'SIM108',
     'TCH003',

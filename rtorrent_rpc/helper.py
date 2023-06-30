@@ -25,7 +25,11 @@ def add_completed_resume_file(base_save_path: Path, torrent_content: bytes) -> b
             stat = file_path.lstat()
             if stat.st_size == file[b"length"]:
                 files.append(
-                    {b"complete": int(file.length / piece_length), b"mtime": int(stat.st_mtime), b"priority": 1}
+                    {
+                        b"complete": int(file.length / piece_length),
+                        b"mtime": int(stat.st_mtime),
+                        b"priority": 1,
+                    }
                 )
             else:
                 files.append({b"complete": 0, b"mtime": 0, b"priority": 1})
@@ -33,7 +37,9 @@ def add_completed_resume_file(base_save_path: Path, torrent_content: bytes) -> b
         # return torrent_content
         stat = base_save_path.joinpath(data[b"info"][b"name"]).lstat()
         if stat.st_size == data[b"info"][b"length"]:
-            files.append({b"complete": piece_count, b"mtime": int(stat.st_mtime), b"priority": 1})
+            files.append(
+                {b"complete": piece_count, b"mtime": int(stat.st_mtime), b"priority": 1}
+            )
         else:
             return torrent_content
 

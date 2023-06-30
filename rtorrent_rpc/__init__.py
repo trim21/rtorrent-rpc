@@ -4,7 +4,7 @@ import urllib.parse
 import xmlrpc.client
 from collections.abc import Iterator
 from pathlib import Path
-from typing import Any, TypedDict, Literal, TypeAlias
+from typing import Any, Literal, TypeAlias, TypedDict
 
 from rtorrent_xmlrpc import SCGIServerProxy
 from typing_extensions import NotRequired
