@@ -7,6 +7,10 @@ __all__ = ["add_completed_resume_file"]
 
 
 def add_completed_resume_file(base_save_path: Path, torrent_content: bytes) -> bytes:
+    """update torrent content, add resume data to torrent.
+
+    based on [rtorrent_fast_resume.pl](https://github.com/rakshasa/rtorrent/blob/master/doc/rtorrent_fast_resume.pl)
+    """
     data: dict[bytes, Any] = bencodepy.bdecode(torrent_content)
 
     piece_length = data[b"info"][b"piece length"]
