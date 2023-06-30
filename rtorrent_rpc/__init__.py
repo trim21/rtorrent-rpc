@@ -7,7 +7,7 @@ from typing import Any, Literal, Protocol, TypeAlias, TypedDict
 from rtorrent_xmlrpc import SCGIServerProxy
 from typing_extensions import NotRequired
 
-__all__ = ["RTorrent"]
+__all__ = ["RTorrent", "MultiCall"]
 
 Unknown: TypeAlias = Any
 
@@ -54,11 +54,17 @@ class RTorrent:
         directory: str,
         tags: list[str] | None = None,
     ) -> None:
+        """
+
+        :param content: raw torrent content
+        :param directory: download base directory
+        :param tags: optional tags for download
+        """
         params = [
             "",
             content,
             'd.tied_to_file.set=""',
-            f"d.custom.set=addtime,{int(time.time())}",
+            f"d.custom.set=addtime,{int(time.time())}",  # this custom is commonly used by ruTorrent and flood.
             f'd.directory_base.set="{directory}"',
         ]
 
@@ -863,12 +869,3 @@ _methods = [
     "cfg.scrape_interval.idle.set",
     "d.last_scrape.send_set",
 ]
-
-# p = xmlrpc.server.SimpleXMLRPCServer(addr=('127.0.0.1', 5000))
-
-# rt = SCGIServerProxy('scgi://127.0.0.1:5000/')
-
-# info_hash = '2E0BBFB20C2AC4E497D3FD2BDEF2189382010E7A'
-
-# print(rt.d.last_scrape.send_set(info_hash))
-# print(rt.d.tracker(info_hash))
