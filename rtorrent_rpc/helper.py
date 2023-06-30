@@ -1,9 +1,16 @@
+import hashlib
 from pathlib import Path
 from typing import Any
 
 import bencodepy
 
-__all__ = ["add_completed_resume_file"]
+__all__ = ["add_completed_resume_file", "get_torrent_info_hash"]
+
+
+def get_torrent_info_hash(content: bytes) -> str:
+    """get torrent info_hash in low case string"""
+    data = bencodepy.bdecode(content)
+    return hashlib.sha1(bencodepy.bencode(data[b"info"])).hexdigest()
 
 
 def add_completed_resume_file(base_save_path: Path, torrent_content: bytes) -> bytes:
