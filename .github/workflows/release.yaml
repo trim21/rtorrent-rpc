@@ -5,6 +5,9 @@ on:
     tags:
       - v*
 
+permissions:
+  contents: write
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -21,12 +24,7 @@ jobs:
         env:
           POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
 
-      - name: Get Tag Name
-        run: echo "TAG=${GITHUB_REF##*/}" >> $GITHUB_ENV
-
-      - uses: actions/setup-node@v3
-
       - name: Upload Github Release
-        run: gh release create "$TAG" ./dist/*
+        run: gh release create "${GITHUB_REF}" ./dist/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
