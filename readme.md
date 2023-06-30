@@ -1,6 +1,6 @@
 # Typed rtorrent rpc client
 
-[![PyPI](https://img.shields.io/pypi/v/transmission-rpc)](https://pypi.org/project/rtorrent-rpc/)
+[![PyPI](https://img.shields.io/pypi/v/rtorrent-rpc)](https://pypi.org/project/rtorrent-rpc/)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/rtorrent-rpc)](https://pypi.org/project/rtorrent-rpc/)
 
 `rtorrent-rpc` is a python wrapper on top of rtorrent XML RPC protocol,
