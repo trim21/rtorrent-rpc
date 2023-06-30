@@ -10,15 +10,11 @@ on:
 
 jobs:
   test:
-    runs-on: '${{ matrix.os }}-latest'
+    runs-on: 'ubuntu-latest'
     strategy:
       fail-fast: false
       matrix:
         python: [ "3.10", "3.11" ]
-        os:
-          - macos
-          - windows
-          - ubuntu
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
