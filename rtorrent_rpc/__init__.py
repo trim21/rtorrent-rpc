@@ -1,7 +1,7 @@
 import time
 import urllib.parse
 import xmlrpc.client
-from collections.abc import Iterator
+from collections.abc import Iterable
 from typing import Any, Literal, Protocol, TypeAlias, TypedDict
 
 from rtorrent_xmlrpc import SCGIServerProxy
@@ -64,7 +64,8 @@ class RTorrent:
             "",
             content,
             'd.tied_to_file.set=""',
-            f"d.custom.set=addtime,{int(time.time())}",  # this custom is commonly used by ruTorrent and flood.
+            f"d.custom.set=addtime,{int(time.time())}",
+            # this custom is commonly used by ruTorrent and flood.
             f'd.directory_base.set="{directory}"',
         ]
 
@@ -112,7 +113,7 @@ class RTorrent:
     def d_save_resume(self, info_hash: str) -> None:
         return self.rpc.d.save_resume(info_hash)
 
-    def d_set_tags(self, info_hash: str, tags: Iterator[str]) -> None:
+    def d_set_tags(self, info_hash: str, tags: Iterable[str]) -> None:
         """set download tags"""
         self.rpc.d.custom1.set(info_hash, ",".join(tags))
 
