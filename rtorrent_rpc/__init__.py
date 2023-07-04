@@ -39,6 +39,8 @@ class _SystemRpc(Protocol):
 
 
 class RTorrent:
+    rpc: xmlrpc.client.ServerProxy
+
     def __init__(self, address: str):
         u = urllib.parse.urlparse(address)
         if u.scheme == "scgi":
@@ -47,7 +49,7 @@ class RTorrent:
             self.rpc = xmlrpc.client.ServerProxy(address)
 
     def get_session_path(self) -> str:
-        return self.rpc.session.path()
+        return self.rpc.session.path()  # type: ignore
 
     def add_torrent_by_file(
         self,
@@ -73,7 +75,7 @@ class RTorrent:
         if tags:
             params.append(f'd.custom1.set="{_encode_tags(tags)}"')
 
-        self.rpc.load.raw_start_verbose(*params)
+        self.rpc.load.raw_start_verbose(*params)  # type: ignore
 
     def stop_torrent(self, info_hash: str) -> None:
         self.system.multicall(
@@ -95,24 +97,24 @@ class RTorrent:
         self.rpc.d.directory_base.set(info_hash, directory)
 
     def download_list(self) -> list[str]:
-        return self.rpc.download_list()
+        return self.rpc.download_list()  # type: ignore
 
     def system_list_methods(self) -> list[str]:
-        return self.rpc.system.listMethods()
+        return self.rpc.system.listMethods()  # type: ignore
 
     def d_tracker_send_scrape(self, info_hash: str, delay: Unknown) -> None:
-        return self.rpc.d.tracker.send_scrape(info_hash, delay)
+        self.rpc.d.tracker.send_scrape(info_hash, delay)
 
     @property
     def system(self) -> _SystemRpc:
-        return self.rpc.system
+        return self.rpc.system  # type: ignore
 
     @property
     def d(self) -> _DownloadRpc:
-        return self.rpc.d
+        return self.rpc.d  # type: ignore
 
     def d_save_resume(self, info_hash: str) -> None:
-        return self.rpc.d.save_resume(info_hash)
+        self.rpc.d.save_resume(info_hash)
 
     def d_set_tags(self, info_hash: str, tags: Iterable[str]) -> None:
         """set download tags"""

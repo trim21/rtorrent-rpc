@@ -18,15 +18,17 @@ import xmlrpc.client
 
 __all__ = ["SCGITransport", "SCGIServerProxy"]
 
+from typing import Any
+
 NULL = b"\x00"
 
 
 class SCGITransport(xmlrpc.client.Transport):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any):
         super().__init__(*args, **kwargs)
         self.verbose = False
 
-    def encode_scgi_headers(self, content_length, **others):
+    def encode_scgi_headers(self, content_length: int) -> bytes:
         # Need to use an ordered dict because content length MUST be the first
         #  key present in the encoded headers.
         headers = {
@@ -34,13 +36,13 @@ class SCGITransport(xmlrpc.client.Transport):
             b"SCGI": b"1",
         }
 
-        headers.update(others)  # Assume already bytes for keys and values
-
         encoded = NULL.join(k + NULL + v for k, v in headers.items()) + NULL
         length = str(len(encoded)).encode("utf-8")
         return length + b":" + encoded
 
-    def single_request(self, host, handler, request_body, verbose=0):
+    def single_request(
+        self, host: str, handler: Any, request_body: bytes, verbose: bool = False
+    ) -> Any:
         # Add SCGI headers to the request.
         header = self.encode_scgi_headers(len(request_body))
         scgi_request = header + b"," + request_body
@@ -87,7 +89,7 @@ class SCGITransport(xmlrpc.client.Transport):
         # Split by and remove the whitespace
         return response[:index], response[index + offset :]
 
-    def parse_response(self, response: io.TextIOBase):
+    def parse_response(self, response: io.TextIOBase) -> tuple[Any]:  # type: ignore
         p, u = self.getparser()
 
         response_body = ""
@@ -111,7 +113,12 @@ class SCGITransport(xmlrpc.client.Transport):
 
 class SCGIServerProxy(xmlrpc.client.ServerProxy):
     def __init__(
-        self, uri, transport=None, use_datetime=False, use_builtin_types=False, **kwargs
+        self,
+        uri: str,
+        transport: xmlrpc.client.Transport | None = None,
+        use_datetime: bool = False,
+        use_builtin_types: bool = False,
+        **kwargs: Any,
     ):
         scheme, uri = splittype(uri)
 
@@ -135,7 +142,7 @@ class SCGIServerProxy(xmlrpc.client.ServerProxy):
             self._ServerProxy__handler = "/"
 
 
-def splittype(url):
+def splittype(url: str) -> tuple[None | str, str]:
     """
     splittype('type:opaquestring') --> 'type', 'opaquestring'.
 
@@ -153,7 +160,7 @@ def splittype(url):
     return url[:split_at].lower(), url[split_at + 1 :]
 
 
-def splithost(url):
+def splithost(url: str) -> tuple[str | None, str | None]:
     """
     splithost('//host[:port]/path') --> 'host[:port]', '/path'.
 
@@ -175,11 +182,11 @@ def splithost(url):
     return hostpath[:split_from], hostpath[split_from:]
 
 
-def is_non_digit(character):
+def is_non_digit(character: str) -> bool:
     return character not in string.digits
 
 
-def splitport(hostport):
+def splitport(hostport: str) -> tuple[str, str | None]:
     """
     splitport('host:port') --> 'host', 'port'.
 
