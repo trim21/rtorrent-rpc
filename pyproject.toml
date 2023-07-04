@@ -26,7 +26,6 @@ classifiers = [
 python = "^3.10"
 # dependencies
 typing-extensions = ">=4.1.0"
-rtorrent-xmlrpc = "^0.0.3"
 bencode-py = "^4.0.0"
 
 [tool.poetry.group.docs.dependencies]

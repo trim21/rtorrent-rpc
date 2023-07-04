@@ -4,7 +4,7 @@ import xmlrpc.client
 from collections.abc import Iterable
 from typing import Any, Literal, Protocol, TypeAlias, TypedDict
 
-from rtorrent_xmlrpc import SCGIServerProxy
+from .scgi import SCGIServerProxy
 from typing_extensions import NotRequired
 
 __all__ = ["RTorrent", "MultiCall"]
