@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import io
 
 # rtorrent_xmlrpc
@@ -13,7 +12,6 @@ import io
 #
 # [1] <http://libtorrent.rakshasa.no/wiki/UtilsXmlrpc2scgi>
 #
-
 import socket
 import string
 import xmlrpc.client
@@ -72,7 +70,7 @@ class SCGITransport(xmlrpc.client.Transport):
     def response_split_header(self, response):
         try:
             index = response.index("\n")
-            while not response[index + 1] in string.whitespace:
+            while response[index + 1] not in string.whitespace:
                 index = response.index("\n", index + 1)
 
         except (ValueError, IndexError) as e:
@@ -178,7 +176,7 @@ def splithost(url):
 
 
 def is_non_digit(character):
-    return not character in string.digits
+    return character not in string.digits
 
 
 def splitport(hostport):
