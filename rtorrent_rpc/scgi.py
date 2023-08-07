@@ -14,11 +14,12 @@ import io
 #
 import socket
 import string
+import urllib
+import urllib.parse
 import xmlrpc.client
+from typing import Any
 
 __all__ = ["SCGITransport", "SCGIServerProxy"]
-
-from typing import Any
 
 NULL = b"\x00"
 
@@ -41,7 +42,7 @@ class SCGITransport(xmlrpc.client.Transport):
         return length + b":" + encoded
 
     def single_request(
-        self, host: str, handler: Any, request_body: bytes, verbose: bool = False
+        self, host: str, handler: str, request_body: bytes, verbose: bool = False
     ) -> Any:
         # Add SCGI headers to the request.
         header = self.encode_scgi_headers(len(request_body))
@@ -120,10 +121,10 @@ class SCGIServerProxy(xmlrpc.client.ServerProxy):
         use_builtin_types: bool = False,
         **kwargs: Any,
     ):
-        scheme, uri = splittype(uri)
+        u = urllib.parse.urlparse(uri)
 
-        if scheme != "scgi":
-            raise OSError("unsupported XML-RPC protocol")
+        if u.scheme != "scgi":
+            raise OSError("SCGIServerProxy Only Support XML-RPC over SCGI protocol")
 
         if transport is None:
             transport = SCGITransport(
@@ -136,50 +137,10 @@ class SCGIServerProxy(xmlrpc.client.ServerProxy):
         # Fix the result of the junk above
         # The names are weird here because of name mangling. See:
         #  https://docs.python.org/3/tutorial/classes.html#private-variables
-        self._ServerProxy__host, self._ServerProxy__handler = splithost(uri)
+        self._ServerProxy__host, self._ServerProxy__handler = u.netloc, u.path
 
         if not self._ServerProxy__handler:
             self._ServerProxy__handler = "/"
-
-
-def splittype(url: str) -> tuple[None | str, str]:
-    """
-    splittype('type:opaquestring') --> 'type', 'opaquestring'.
-
-    If type is unknown, it will be `None`. Type will always be returned
-     in lowercase.
-    This functionality use to (sort of) be provided by urllib as
-     `urllib.splittype` in python2, but has since been removed.
-    """
-    try:
-        split_at = url.index(":")
-    except ValueError:
-        return None, url  # Can't tell what the type is
-
-    # Don't include the colon in either value.
-    return url[:split_at].lower(), url[split_at + 1 :]
-
-
-def splithost(url: str) -> tuple[str | None, str | None]:
-    """
-    splithost('//host[:port]/path') --> 'host[:port]', '/path'.
-
-    This functionality use to (sort of) be provided by urllib as
-     `urllib.splithost` in python2, but has since been removed.
-    """
-
-    if not url.startswith("//"):
-        return None, url  # Probably a relative path
-
-    hostpath = url[2:]  # remove the '//'
-
-    try:
-        split_from = hostpath.index("/")
-    except ValueError:
-        return url, None  # Seems to contain host only
-
-    # Unlike `splittype`, we want the separating character in the path
-    return hostpath[:split_from], hostpath[split_from:]
 
 
 def is_non_digit(character: str) -> bool:
