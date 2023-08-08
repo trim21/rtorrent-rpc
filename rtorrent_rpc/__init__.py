@@ -132,7 +132,7 @@ class RTorrent:
         self.rpc.d.save_resume(info_hash)
 
     def d_set_tags(self, info_hash: str, tags: Iterable[str]) -> None:
-        """set download tags"""
+        """set download tags, work with flood and ruTorrent."""
         self.rpc.d.custom1.set(info_hash, ",".join(tags))
 
 
