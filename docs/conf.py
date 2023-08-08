@@ -24,7 +24,7 @@ templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 autodoc_member_order = "bysource"
-autodoc_class_signature = "separated"
+# autodoc_class_signature = "separated"
 
 html_theme_options = {
     "source_edit_link": "https://github.com/trim21/rtorrent-rpc/blob/master/docs/{filename}",

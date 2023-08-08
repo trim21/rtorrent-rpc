@@ -18,11 +18,13 @@ class MultiCall(TypedDict):
     params: NotRequired[Any]
 
 
-def _encode_tags(tags: list[str] | None) -> str:
+def _encode_tags(tags: Iterable[str] | None) -> str:
     if not tags:
         return ""
 
-    return ",".join(urllib.parse.quote(t) for t in {x.strip() for x in tags} if t)
+    return ",".join(
+        sorted(urllib.parse.quote(t) for t in {x.strip() for x in tags} if t)
+    )
 
 
 class _DownloadRpc(Protocol):
@@ -39,23 +41,30 @@ class _SystemRpc(Protocol):
 
 
 class RTorrent:
+    """
+    RTorrent rpc client
+
+    .. code-block:: python
+
+        rt = RTorrent('scgi://127.0.0.1:5000')
+        rt = RTorrent('scgi:///home/ubuntu/.local/rtorrent.sock')
+
+    If you are using ruTorrent or nginx scgi proxy, http(s) protocol are also supported
+
+    .. code-block:: python
+
+        rt = RTorrent('http://127.0.0.1')
+
+
+    Underling ``xmlrpc.client.ServerProxy`` are exposed as instance property ``.rpc``,
+    you can use ``rt.rpc`` for direct rpc call.
+
+    :param address: rtorrent rpc address
+    """
+
     rpc: xmlrpc.client.ServerProxy
 
     def __init__(self, address: str):
-        """
-        .. code-block:: python
-
-            client = RTorrent('scgi://127.0.0.1:5000')
-            client = RTorrent('scgi:///home/ubuntu/.local/rtorrent.sock')
-
-        If you are using ruTorrent or nginx scgi proxy, http(s) protocol are also supported
-
-        .. code-block:: python
-
-            client = RTorrent('http://127.0.0.1')
-
-        :param address: rtorrent rpc address
-        """
         u = urllib.parse.urlparse(address)
         if u.scheme == "scgi":
             self.rpc = SCGIServerProxy(address)
@@ -74,9 +83,9 @@ class RTorrent:
     ) -> None:
         """
 
-        :param content: raw torrent content
+        :param content: raw torrent content in bytes
         :param directory: download base directory
-        :param tags: optional tags for download
+        :param tags: optional tags, work with ruTorrent or flood
         """
         params = [
             "",
@@ -122,18 +131,36 @@ class RTorrent:
 
     @property
     def system(self) -> _SystemRpc:
+        """method call with ``system`` prefix
+
+        Example
+
+        .. code-block:: python
+
+            rt.system.listMethods(...)
+        """
         return self.rpc.system  # type: ignore
 
     @property
     def d(self) -> _DownloadRpc:
+        """method call with ``d`` prefix
+
+        Example
+
+        .. code-block:: python
+
+            rt.d.save_resume(...)
+            rt.d.open(...)
+        """
         return self.rpc.d  # type: ignore
 
     def d_save_resume(self, info_hash: str) -> None:
+        """alias of ``d.save_resume``"""
         self.rpc.d.save_resume(info_hash)
 
     def d_set_tags(self, info_hash: str, tags: Iterable[str]) -> None:
         """set download tags, work with flood and ruTorrent."""
-        self.rpc.d.custom1.set(info_hash, ",".join(tags))
+        self.rpc.d.custom1.set(info_hash, _encode_tags(tags))
 
 
 _methods = [
