@@ -19,7 +19,6 @@ classifiers = [
     'Programming Language :: Python :: 3 :: Only',
     'Programming Language :: Python :: 3.10',
     'Programming Language :: Python :: 3.11',
-    'Programming Language :: Python :: Implementation :: CPython',
 ]
 
 [tool.poetry.dependencies]
@@ -30,7 +29,7 @@ bencode-py = "^4.0.0"
 
 [tool.poetry.group.docs.dependencies]
 sphinx = { version = "^7.0.0", python = "^3.9" }
-furo = { version = "2023.05.20", python = "^3.9" }
+furo = { version = "^2023.05.20", python = "^3.9" }
 
 [tool.poetry.group.dev.dependencies]
 # tests
