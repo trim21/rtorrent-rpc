@@ -45,9 +45,14 @@ class RTorrent:
         """
         .. code-block:: python
 
-            client = RTorrent('http://127.0.0.1/RPC2')
             client = RTorrent('scgi://127.0.0.1:5000')
             client = RTorrent('scgi:///home/ubuntu/.local/rtorrent.sock')
+
+        If you are using ruTorrent or nginx scgi proxy, http(s) protocol are also supported
+
+        .. code-block:: python
+
+            client = RTorrent('http://127.0.0.1')
 
         :param address: rtorrent rpc address
         """
