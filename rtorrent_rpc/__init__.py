@@ -121,6 +121,7 @@ class RTorrent:
         self.rpc.d.directory_base.set(info_hash, directory)
 
     def download_list(self) -> list[str]:
+        """get list of info hash for current downloads"""
         return self.rpc.download_list()  # type: ignore
 
     def system_list_methods(self) -> list[str]:
