@@ -1,5 +1,3 @@
-import io
-
 # rtorrent_xmlrpc
 # (c) 2011 Roger Que <alerante@bellsouth.net>
 # Updated for python3 by Daniel Bowring <contact@danielb.codes>
@@ -11,7 +9,7 @@ import io
 # such as MultiCall objects.
 #
 # [1] <http://libtorrent.rakshasa.no/wiki/UtilsXmlrpc2scgi>
-#
+import io
 import socket
 import string
 import urllib
@@ -49,16 +47,13 @@ class SCGITransport(xmlrpc.client.Transport):
         scgi_request = header + b"," + request_body
 
         sock = None
+        print(host, handler)
 
         try:
-            if host:
+            if host:  # tcp
                 host, port = splitport(host)
-                addr_info = socket.getaddrinfo(
-                    host, port, socket.AF_INET, socket.SOCK_STREAM
-                )
-                sock = socket.socket(*addr_info[0][:3])
-                sock.connect(addr_info[0][4])
-            else:
+                sock = socket.create_connection((host, port))
+            else:  # unix domain socket
                 sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
                 sock.connect(handler)
 
@@ -90,7 +85,7 @@ class SCGITransport(xmlrpc.client.Transport):
         # Split by and remove the whitespace
         return response[:index], response[index + offset :]
 
-    def parse_response(self, response: io.TextIOBase) -> tuple[Any]:  # type: ignore
+    def parse_response(self, response: io.TextIOBase) -> Any:  # type: ignore
         p, u = self.getparser()
 
         response_body = ""
@@ -132,22 +127,14 @@ class SCGIServerProxy(xmlrpc.client.ServerProxy):
             )
 
         # Feed some junk in here, but we'll fix it afterwards
-        super().__init__("http://thiswillbe/overwritten", transport=transport, **kwargs)
-
-        # Fix the result of the junk above
-        # The names are weird here because of name mangling. See:
-        #  https://docs.python.org/3/tutorial/classes.html#private-variables
-        self._ServerProxy__host, self._ServerProxy__handler = u.netloc, u.path
-
-        if not self._ServerProxy__handler:
-            self._ServerProxy__handler = "/"
+        super().__init__(
+            urllib.parse.urlunparse(u._replace(scheme="http")),
+            transport=transport,
+            **kwargs,
+        )
 
 
-def is_non_digit(character: str) -> bool:
-    return character not in string.digits
-
-
-def splitport(hostport: str) -> tuple[str, str | None]:
+def splitport(hostport: str) -> tuple[str, int]:
     """
     splitport('host:port') --> 'host', 'port'.
 
@@ -155,13 +142,5 @@ def splitport(hostport: str) -> tuple[str, str | None]:
      `urllib.splithost` in python2, but has since been removed.
     """
 
-    try:
-        host, port = hostport.split(":", 1)  # ValueError if there is no colon
-    except ValueError:
-        return hostport, None
-
-    # Port should contain only digits
-    if any(map(is_non_digit, port)):
-        return hostport, None
-
-    return host, port
+    host, _, port = hostport.partition(":")
+    return host, int(port)

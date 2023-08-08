@@ -22,6 +22,7 @@ All kinds of PRs (docs, feature, bug fixes and eta...) are most welcome.
 from rtorrent_rpc import RTorrent
 
 client = RTorrent(address='scgi://127.0.0.1:5000')
+unix_client = RTorrent(address='scgi:///home/ubuntu/.local/share/rtorrent.sock')
 ```
 
 ## License
