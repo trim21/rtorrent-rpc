@@ -42,6 +42,20 @@ class RTorrent:
     rpc: xmlrpc.client.ServerProxy
 
     def __init__(self, address: str):
+        """
+        .. code-block:: python
+
+            client = RTorrent('scgi://127.0.0.1:5000')
+            client = RTorrent('scgi:///home/ubuntu/.local/rtorrent.sock')
+
+        If you are using ruTorrent or nginx scgi proxy, http(s) protocol are also supported
+
+        .. code-block:: python
+
+            client = RTorrent('http://127.0.0.1')
+
+        :param address: rtorrent rpc address
+        """
         u = urllib.parse.urlparse(address)
         if u.scheme == "scgi":
             self.rpc = SCGIServerProxy(address)
@@ -49,6 +63,7 @@ class RTorrent:
             self.rpc = xmlrpc.client.ServerProxy(address)
 
     def get_session_path(self) -> str:
+        """get current rtorrent session path"""
         return self.rpc.session.path()  # type: ignore
 
     def add_torrent_by_file(
@@ -117,7 +132,7 @@ class RTorrent:
         self.rpc.d.save_resume(info_hash)
 
     def d_set_tags(self, info_hash: str, tags: Iterable[str]) -> None:
-        """set download tags"""
+        """set download tags, work with flood and ruTorrent."""
         self.rpc.d.custom1.set(info_hash, ",".join(tags))
 
 

@@ -1,0 +1,11 @@
+version: 3
+
+tasks:
+  docs:
+    cmd: sphinx-build docs/ docs/_build/
+    sources:
+      - docs/**.rst
+      - docs/**.py
+      - rtorrent_rpc/**.py
+    generates:
+      - docs/_build/.buildinfo
