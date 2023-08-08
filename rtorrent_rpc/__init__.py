@@ -117,18 +117,9 @@ class RTorrent:
             ]
         )
 
-    def set_torrent_base_directory(self, info_hash: str, directory: str) -> None:
-        self.rpc.d.directory_base.set(info_hash, directory)
-
     def download_list(self) -> list[str]:
         """get list of info hash for current downloads"""
         return self.rpc.download_list()  # type: ignore
-
-    def system_list_methods(self) -> list[str]:
-        return self.rpc.system.listMethods()  # type: ignore
-
-    def d_tracker_send_scrape(self, info_hash: str, delay: Unknown) -> None:
-        self.rpc.d.tracker.send_scrape(info_hash, delay)
 
     @property
     def system(self) -> _SystemRpc:
@@ -141,6 +132,10 @@ class RTorrent:
             rt.system.listMethods(...)
         """
         return self.rpc.system  # type: ignore
+
+    def system_list_methods(self) -> list[str]:
+        """get supported methods"""
+        return self.rpc.system.listMethods()  # type: ignore
 
     @property
     def d(self) -> _DownloadRpc:
@@ -155,6 +150,13 @@ class RTorrent:
         """
         return self.rpc.d  # type: ignore
 
+    def d_set_torrent_base_directory(self, info_hash: str, directory: str) -> None:
+        """change base directory of a download.
+
+        you may need to stop/close torrent first.
+        """
+        self.rpc.d.directory_base.set(info_hash, directory)
+
     def d_save_resume(self, info_hash: str) -> None:
         """alias of ``d.save_resume``"""
         self.rpc.d.save_resume(info_hash)
@@ -162,6 +164,9 @@ class RTorrent:
     def d_set_tags(self, info_hash: str, tags: Iterable[str]) -> None:
         """set download tags, work with flood and ruTorrent."""
         self.rpc.d.custom1.set(info_hash, _encode_tags(tags))
+
+    def d_tracker_send_scrape(self, info_hash: str, delay: Unknown) -> None:
+        self.rpc.d.tracker.send_scrape(info_hash, delay)
 
 
 _methods = [

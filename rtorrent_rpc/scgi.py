@@ -40,17 +40,24 @@ class SCGITransport(xmlrpc.client.Transport):
         return length + b":" + encoded
 
     def single_request(
-        self, host: str, handler: str, request_body: bytes, verbose: bool = False
+        self,
+        host: str | tuple[str, dict[str, str]],
+        handler: str,
+        request_body: Any,
+        verbose: bool = False,
     ) -> Any:
         # Add SCGI headers to the request.
         header = self.encode_scgi_headers(len(request_body))
         scgi_request = header + b"," + request_body
 
         sock = None
-        print(host, handler)
 
         try:
             if host:  # tcp
+                # maybe a host:port string, or host, x509 info
+                # we don't need to support scgi over tls, so just omit
+                if not isinstance(host, str):
+                    raise ValueError("scgi over tls is not supported")
                 host, port = splitport(host)
                 sock = socket.create_connection((host, port))
             else:  # unix domain socket
@@ -65,7 +72,7 @@ class SCGITransport(xmlrpc.client.Transport):
             if sock:
                 sock.close()
 
-    def response_split_header(self, response):
+    def response_split_header(self, response: str) -> tuple[str, str]:
         try:
             index = response.index("\n")
             while response[index + 1] not in string.whitespace:

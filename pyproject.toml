@@ -24,7 +24,7 @@ classifiers = [
 [tool.poetry.dependencies]
 python = "^3.10"
 # dependencies
-typing-extensions = ">=4.1.0"
+typing-extensions = "^4.7.1"
 bencode-py = "^4.0.0"
 
 [tool.poetry.group.docs.dependencies]
@@ -42,6 +42,7 @@ pre-commit = { version = "==3.3.3", markers = "implementation_name != 'pypy'", p
 #mypy = { version = "==1.4.1", markers = "implementation_name != 'pypy'", python = "^3.9" }
 ruff = "0.0.282"
 sphinx-autobuild = "2021.3.14"
+mypy = "^1.4.1"
 
 [tool.poetry-plugin-bump]
 commit_msg = 'bump: v{version}'
@@ -57,9 +58,10 @@ warn_return_any = false
 warn_unused_configs = true
 show_error_codes = true
 
+platform = 'unix'
+
 [tool.black]
 target-version = ['py310']
-
 
 [tool.ruff]
 select = [
