@@ -2,7 +2,7 @@ version: 3
 
 tasks:
   docs:
-    cmd: sphinx-build docs/ docs/_build/
+    cmd: sphinx-build docs/ docs/_build/ -j auto
     sources:
       - docs/**.rst
       - docs/**.py
