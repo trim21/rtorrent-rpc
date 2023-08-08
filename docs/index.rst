@@ -6,9 +6,16 @@
 Welcome to rtorrent-rpc's documentation!
 ========================================
 
+quick start
+-------------------------
+
+.. literalinclude:: examples/quick-start.py
+
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Contents:
+
+   RTorrent.rst
 
 
 Indices and tables

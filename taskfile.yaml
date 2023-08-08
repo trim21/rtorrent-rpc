@@ -8,4 +8,4 @@ tasks:
       - docs/**.py
       - rtorrent_rpc/**.py
     generates:
-      - docs/_build/**/*
+      - docs/_build/.buildinfo

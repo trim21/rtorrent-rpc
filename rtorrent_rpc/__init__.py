@@ -42,6 +42,15 @@ class RTorrent:
     rpc: xmlrpc.client.ServerProxy
 
     def __init__(self, address: str):
+        """
+        .. code-block:: python
+
+            client = RTorrent('http://127.0.0.1/RPC2')
+            client = RTorrent('scgi://127.0.0.1:5000')
+            client = RTorrent('scgi:///home/ubuntu/.local/rtorrent.sock')
+
+        :param address: rtorrent rpc address
+        """
         u = urllib.parse.urlparse(address)
         if u.scheme == "scgi":
             self.rpc = SCGIServerProxy(address)
@@ -49,6 +58,7 @@ class RTorrent:
             self.rpc = xmlrpc.client.ServerProxy(address)
 
     def get_session_path(self) -> str:
+        """get current rtorrent session path"""
         return self.rpc.session.path()  # type: ignore
 
     def add_torrent_by_file(
