@@ -6,9 +6,16 @@
 Welcome to rtorrent-rpc's documentation!
 ========================================
 
+installation
+------------
+
+
+.. code-block:: shell
+
+   pip install rtorrent-rpc
+
 quick start
 -------------------------
-
 .. literalinclude:: examples/quick-start.py
 
 .. toctree::
