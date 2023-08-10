@@ -50,29 +50,29 @@ class SCGITransport(xmlrpc.client.Transport):
         header = self.encode_scgi_headers(len(request_body))
         scgi_request = header + b"," + request_body
 
-        sock = None
-
-        try:
-            if host:  # tcp
-                # maybe a host:port string, or host, x509 info
-                # we don't need to support scgi over tls, so just omit
-                if not isinstance(host, str):
-                    raise ValueError("scgi over tls is not supported")
-                host, port = splitport(host)
-                sock = socket.create_connection((host, port))
-            else:  # unix domain socket
-                sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-                sock.connect(handler)
-
-            self.verbose = verbose
-
+        with self.__connect(host, handler) as sock:
             sock.send(scgi_request)
-            return self.parse_response(sock.makefile(encoding="utf-8"))
-        finally:
-            if sock:
-                sock.close()
+            with sock.makefile(encoding="utf-8") as res:
+                return self._parse_response(res, verbose)
 
-    def response_split_header(self, response: str) -> tuple[str, str]:
+    def __connect(
+        self,
+        host: str | tuple[str, dict[str, str]],
+        handler: str,
+    ) -> socket.socket:
+        if host:  # tcp
+            # maybe a host:port string, or host, x509 info
+            # we don't need to support scgi over tls, so just omit
+            if not isinstance(host, str):
+                raise ValueError("scgi over tls is not supported")
+            host, port = splitport(host)
+            return socket.create_connection((host, port))
+        # unix domain socket
+        sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        sock.connect(handler)
+        return sock
+
+    def _response_split_header(self, response: str) -> tuple[str, str]:
         try:
             index = response.index("\n")
             while response[index + 1] not in string.whitespace:
@@ -92,20 +92,15 @@ class SCGITransport(xmlrpc.client.Transport):
         # Split by and remove the whitespace
         return response[:index], response[index + offset :]
 
-    def parse_response(self, response: io.TextIOBase) -> Any:  # type: ignore
+    def _parse_response(self, response: io.TextIOBase, verbose: bool) -> Any:
         p, u = self.getparser()
 
-        response_body = ""
-        while True:
-            data = response.read(1024)
-            if not data:
-                break
-            response_body += data
+        response_body = response.read()
 
         # Remove SCGI headers from the response.
-        response_header, response_body = self.response_split_header(response_body)
+        response_header, response_body = self._response_split_header(response_body)
 
-        if self.verbose:
+        if verbose:
             print("body:", repr(response_body))
 
         p.feed(response_body)

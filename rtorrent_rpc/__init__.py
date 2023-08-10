@@ -96,7 +96,7 @@ class RTorrent:
         :param directory: download base directory
         :param tags: optional tags, work with ruTorrent or flood
         """
-        params = [
+        params: list[str | bytes] = [
             "",
             content,
             'd.tied_to_file.set=""',
