@@ -25,7 +25,6 @@ NULL = b"\x00"
 class SCGITransport(xmlrpc.client.Transport):
     def __init__(self, *args: Any, **kwargs: Any):
         super().__init__(*args, **kwargs)
-        self.verbose = False
 
     def encode_scgi_headers(self, content_length: int) -> bytes:
         # Need to use an ordered dict because content length MUST be the first
@@ -79,8 +78,9 @@ class SCGITransport(xmlrpc.client.Transport):
                 index = response.index("\n", index + 1)
 
         except (ValueError, IndexError) as e:
-            msg = "Unable to split response into header and body sections"
-            raise ValueError(msg) from e
+            raise ValueError(
+                "Unable to split response into header and body sections"
+            ) from e
 
         offset = 2  # Know at least the following character is whitespace
         try:
