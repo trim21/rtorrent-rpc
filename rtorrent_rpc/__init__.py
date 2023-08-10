@@ -31,12 +31,21 @@ class _DownloadRpc(Protocol):
     def save_resume(self, info_hash: str) -> None:
         ...
 
-    def multicall2(self, _: Literal[""], vide: str, *commands: str) -> Any:
+    def multicall2(self, _: Literal[""], view: str, *commands: str) -> Any:
         ...
 
 
 class _SystemRpc(Protocol):
     def multicall(self, commands: list[MultiCall]) -> Any:
+        ...
+
+
+class _TrackerRpc(Protocol):
+    def multicall(self, info_hash: str, _: Literal[""], *commands: str) -> None:
+        ...
+
+    def is_enabled(self, tracker_id: str) -> int:
+        """tracker_id is ``{info_hash}:t{index}``"""
         ...
 
 
@@ -167,6 +176,30 @@ class RTorrent:
 
     def d_tracker_send_scrape(self, info_hash: str, delay: Unknown) -> None:
         self.rpc.d.tracker.send_scrape(info_hash, delay)
+
+    @property
+    def t(self) -> _TrackerRpc:
+        """method call with ``t`` prefix
+
+        Example
+
+        .. code-block:: python
+
+            rt.t.is_enabled(...)
+        """
+        return self.rpc.t  # type: ignore
+
+    def t_enable_tracker(self, info_hash: str, tracker_index: int) -> None:
+        """enable a tracker of download"""
+        self.rpc.t.is_enabled.set(f"{info_hash}:t{tracker_index}", 1)
+
+    def t_disable_tracker(self, info_hash: str, tracker_index: int) -> None:
+        """disable a tracker of download"""
+        self.rpc.t.is_enabled.set(f"{info_hash}:t{tracker_index}", 0)
+
+    def d_add_tracker(self, info_hash: str, url: str, *, group: int = 0) -> None:
+        """add a tracker to download"""
+        self.rpc.d.tracker.insert(info_hash, group, url)
 
 
 _methods = [
