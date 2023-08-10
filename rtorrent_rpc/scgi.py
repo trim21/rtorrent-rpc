@@ -47,10 +47,11 @@ class SCGITransport(xmlrpc.client.Transport):
     ) -> Any:
         # Add SCGI headers to the request.
         header = self.encode_scgi_headers(len(request_body))
-        scgi_request = header + b"," + request_body
 
         with self.__connect(host, handler) as sock:
-            sock.send(scgi_request)
+            sock.send(header)
+            sock.send(b",")
+            sock.send(request_body)
             with sock.makefile(encoding="utf-8") as res:
                 return self._parse_response(res, verbose)
 
