@@ -45,8 +45,11 @@ def add_completed_resume_file(base_save_path: Path, torrent_content: bytes) -> b
             else:
                 files.append({b"complete": 0, b"mtime": 0, b"priority": 1})
     else:
-        # return torrent_content
-        stat = base_save_path.joinpath(data[b"info"][b"name"].decode()).lstat()
+        try:
+            stat = base_save_path.joinpath(data[b"info"][b"name"].decode()).lstat()
+        except FileNotFoundError:
+            return torrent_content
+
         if stat.st_size == data[b"info"][b"length"]:
             files.append(
                 {b"complete": piece_count, b"mtime": int(stat.st_mtime), b"priority": 1}
