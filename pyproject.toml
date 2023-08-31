@@ -24,7 +24,7 @@ classifiers = [
 [tool.poetry.dependencies]
 python = "^3.10"
 # dependencies
-typing-extensions = "^4.7.1"
+typing-extensions = ">=4.7.1"
 bencode-py = "^4.0.0"
 
 [tool.poetry.group.docs.dependencies]
