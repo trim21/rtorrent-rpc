@@ -6,6 +6,8 @@
 `rtorrent-rpc` is a python wrapper on top of rtorrent XML RPC protocol,
 hosted on GitHub at [github.com/trim21/rtorrent-rpc](https://github.com/trim21/rtorrent-rpc)
 
+Document is hosted at https://rtorrent-rpc.readthedocs.io/ by readthedocs.
+
 ## Introduction
 
 ```console

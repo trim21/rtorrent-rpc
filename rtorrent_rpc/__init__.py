@@ -28,6 +28,8 @@ def _encode_tags(tags: Iterable[str] | None) -> str:
 
 
 class _DownloadRpc(Protocol):
+    """this is not a real class, it's a typing protocol for rpc typing"""
+
     def save_resume(self, info_hash: str) -> None:
         """save resume data"""
 
@@ -36,11 +38,15 @@ class _DownloadRpc(Protocol):
 
 
 class _SystemRpc(Protocol):
+    """this is not a real class, it's a typing protocol for rpc typing"""
+
     def multicall(self, commands: list[MultiCall]) -> Any:
         """run multiple rpc calls"""
 
 
 class _TrackerRpc(Protocol):
+    """this is not a real class, it's a typing protocol for rpc typing"""
+
     def multicall(self, info_hash: str, _: Literal[""], *commands: str) -> None:
         """run multiple rpc calls"""
 
