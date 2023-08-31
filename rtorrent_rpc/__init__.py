@@ -103,7 +103,7 @@ class RTorrent:
 
         Args:
             content: The content of the torrent file as bytes.
-            directory: The directory where the downloaded files will be saved.
+            directory: The base directory where the downloaded files will be saved.
             tags: A list of tags associated with the torrent. Defaults to None.
                 This argument is compatible with ruTorrent and flood.
         """
@@ -111,9 +111,9 @@ class RTorrent:
             "",
             content,
             'd.tied_to_file.set=""',
-            f"d.custom.set=addtime,{int(time.time())}",
-            # this custom is commonly used by ruTorrent and flood.
             f'd.directory_base.set="{directory}"',
+            # custom.addtime is used by ruTorrent and flood.
+            f"d.custom.set=addtime,{int(time.time())}",
         ]
 
         if tags:
@@ -129,6 +129,15 @@ class RTorrent:
         self.rpc.load.raw_start_verbose(*params)  # type: ignore
 
     def stop_torrent(self, info_hash: str) -> None:
+        """
+        Stop and close a torrent.
+
+        Args:
+            info_hash (str): The info hash of the torrent to be stopped.
+
+        Returns:
+            None: This function does not return anything.
+        """
         self.system.multicall(
             [
                 MultiCall(methodName="d.stop", params=[info_hash]),
