@@ -3,7 +3,9 @@ import urllib.parse
 import xmlrpc.client
 from collections.abc import Iterable
 from typing import Any, Literal, Protocol, TypeAlias, TypedDict
+from urllib.parse import quote
 
+import bencodepy
 from typing_extensions import NotRequired
 
 from .scgi import SCGIServerProxy
@@ -22,31 +24,28 @@ def _encode_tags(tags: Iterable[str] | None) -> str:
     if not tags:
         return ""
 
-    return ",".join(
-        sorted(urllib.parse.quote(t) for t in {x.strip() for x in tags} if t)
-    )
+    return ",".join(sorted(quote(t) for t in {x.strip() for x in tags} if t))
 
 
 class _DownloadRpc(Protocol):
     def save_resume(self, info_hash: str) -> None:
-        ...
+        """save resume data"""
 
     def multicall2(self, _: Literal[""], view: str, *commands: str) -> Any:
-        ...
+        """run multiple rpc calls"""
 
 
 class _SystemRpc(Protocol):
     def multicall(self, commands: list[MultiCall]) -> Any:
-        ...
+        """run multiple rpc calls"""
 
 
 class _TrackerRpc(Protocol):
     def multicall(self, info_hash: str, _: Literal[""], *commands: str) -> None:
-        ...
+        """run multiple rpc calls"""
 
     def is_enabled(self, tracker_id: str) -> int:
-        """tracker_id is ``{info_hash}:t{index}``"""
-        ...
+        """tracker_id is in format ``{info_hash}:t{index}``"""
 
 
 class RTorrent:
@@ -69,16 +68,19 @@ class RTorrent:
     you can use ``rt.rpc`` for direct rpc call.
 
     :param address: rtorrent rpc address
+    :param rutorrent_compatibility: compatibility for ruTorrent or flood.
     """
 
     rpc: xmlrpc.client.ServerProxy
 
-    def __init__(self, address: str):
+    def __init__(self, address: str, rutorrent_compatibility: bool = True):
         u = urllib.parse.urlparse(address)
         if u.scheme == "scgi":
             self.rpc = SCGIServerProxy(address)
         else:
             self.rpc = xmlrpc.client.ServerProxy(address)
+
+        self.rutorrent_compatibility: bool = rutorrent_compatibility
 
     def get_session_path(self) -> str:
         """get current rtorrent session path"""
@@ -91,10 +93,13 @@ class RTorrent:
         tags: list[str] | None = None,
     ) -> None:
         """
+        Add a torrent to the client by providing the torrent file content as bytes.
 
-        :param content: raw torrent content in bytes
-        :param directory: download base directory
-        :param tags: optional tags, work with ruTorrent or flood
+        Args:
+            content: The content of the torrent file as bytes.
+            directory: The directory where the downloaded files will be saved.
+            tags: A list of tags associated with the torrent. Defaults to None.
+                This argument is compatible with ruTorrent and flood.
         """
         params: list[str | bytes] = [
             "",
@@ -107,6 +112,13 @@ class RTorrent:
 
         if tags:
             params.append(f'd.custom1.set="{_encode_tags(tags)}"')
+
+        if self.rutorrent_compatibility:
+            t = bencodepy.bdecode(content)
+            if b"comment" in t:
+                params.append(
+                    f'd.custom2.set="VRS24mrker{quote(t[b"comment"].decode().strip())}"'
+                )
 
         self.rpc.load.raw_start_verbose(*params)  # type: ignore
 
@@ -134,11 +146,11 @@ class RTorrent:
     def system(self) -> _SystemRpc:
         """method call with ``system`` prefix
 
-        Example
+        Example:
 
-        .. code-block:: python
+            .. code-block:: python
 
-            rt.system.listMethods(...)
+                rt.system.listMethods(...)
         """
         return self.rpc.system  # type: ignore
 
@@ -150,12 +162,12 @@ class RTorrent:
     def d(self) -> _DownloadRpc:
         """method call with ``d`` prefix
 
-        Example
+        Example:
 
-        .. code-block:: python
+            .. code-block:: python
 
-            rt.d.save_resume(...)
-            rt.d.open(...)
+                rt.d.save_resume(...)
+                rt.d.open(...)
         """
         return self.rpc.d  # type: ignore
 
@@ -181,11 +193,11 @@ class RTorrent:
     def t(self) -> _TrackerRpc:
         """method call with ``t`` prefix
 
-        Example
+        Example:
 
-        .. code-block:: python
+            .. code-block:: python
 
-            rt.t.is_enabled(...)
+                rt.t.is_enabled(...)
         """
         return self.rpc.t  # type: ignore
 
