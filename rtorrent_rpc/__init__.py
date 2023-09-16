@@ -33,7 +33,7 @@ class _DownloadRpc(Protocol):
     def save_resume(self, info_hash: str) -> None:
         """save resume data"""
 
-    def multicall2(self, _: Literal[""], view: str, *commands: str) -> Any:
+    def multicall2(self, _: Literal[""], view: str, *commands: str) -> Iterable[Any]:
         """run multiple rpc calls"""
 
 
@@ -47,7 +47,9 @@ class _SystemRpc(Protocol):
 class _TrackerRpc(Protocol):
     """this is not a real class, it's a typing protocol for rpc typing"""
 
-    def multicall(self, info_hash: str, _: Literal[""], *commands: str) -> Any:
+    def multicall(
+        self, info_hash: str, _: Literal[""], *commands: str
+    ) -> Iterable[Any]:
         """run multiple rpc calls"""
 
     def is_enabled(self, tracker_id: str) -> int:
