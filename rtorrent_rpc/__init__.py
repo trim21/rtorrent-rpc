@@ -47,7 +47,7 @@ class _SystemRpc(Protocol):
 class _TrackerRpc(Protocol):
     """this is not a real class, it's a typing protocol for rpc typing"""
 
-    def multicall(self, info_hash: str, _: Literal[""], *commands: str) -> None:
+    def multicall(self, info_hash: str, _: Literal[""], *commands: str) -> Any:
         """run multiple rpc calls"""
 
     def is_enabled(self, tracker_id: str) -> int:
