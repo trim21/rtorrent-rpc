@@ -14,17 +14,29 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-python@v4
         with:
           python-version: '3.x'
-      - uses: Trim21/setup-poetry@dist/v1
+
+      - uses: trim21/setup-poetry@dist/v1
 
       - run: poetry publish --build
         env:
           POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
 
+      - name: Update CHANGELOG
+        id: changelog
+        uses: requarks/changelog-action@v1
+        with:
+          token: ${{ github.token }}
+          tag: ${{ github.ref_name }}
+          writeToFile: false
+
       - name: Upload Github Release
-        run: gh release create "${GITHUB_REF}" ./dist/*
+        run: gh release create "${GITHUB_REF}" --notes "${CHANGELOG}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CHANGELOG: "${{ steps.changelog.outputs.changes }}"
