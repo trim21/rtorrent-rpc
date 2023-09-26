@@ -27,7 +27,7 @@ jobs:
         env:
           POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
 
-      - name: Update CHANGELOG
+      - name: Generate Changelog
         id: changelog
         uses: requarks/changelog-action@v1
         with:
