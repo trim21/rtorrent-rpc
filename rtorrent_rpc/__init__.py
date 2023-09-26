@@ -56,6 +56,15 @@ class _TrackerRpc(Protocol):
         """tracker_id is in format ``{info_hash}:t{index}``"""
 
 
+class _FileRpc(Protocol):
+    """this is not a real class, it's a typing protocol for rpc typing"""
+
+    def multicall(
+        self, info_hash: str, _: Literal[""], *commands: str
+    ) -> Iterable[Any]:
+        """run multiple rpc calls"""
+
+
 class RTorrent:
     """
     RTorrent rpc client
@@ -229,6 +238,18 @@ class RTorrent:
     def d_add_tracker(self, info_hash: str, url: str, *, group: int = 0) -> None:
         """add a tracker to download"""
         self.rpc.d.tracker.insert(info_hash, group, url)
+
+    @property
+    def f(self) -> _FileRpc:
+        """method call with ``d`` prefix
+
+        Example:
+
+            .. code-block:: python
+
+                rt.f.multicall("<info_hash>", "", "f.path=")
+        """
+        return self.rpc.f  # type: ignore
 
 
 _methods = [
