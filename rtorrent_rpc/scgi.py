@@ -9,9 +9,7 @@
 # such as MultiCall objects.
 #
 # [1] <http://libtorrent.rakshasa.no/wiki/UtilsXmlrpc2scgi>
-import io
 import socket
-import string
 import urllib
 import urllib.parse
 import xmlrpc.client
@@ -52,8 +50,8 @@ class SCGITransport(xmlrpc.client.Transport):
             sock.send(header)
             sock.send(b",")
             sock.send(request_body)
-            with sock.makefile(encoding="utf-8") as res:
-                return self._parse_response(res, verbose)
+            with sock.makefile(mode="rb", errors="strict") as res:
+                return self._parse_response(res.read(), verbose)
 
     def __connect(
         self,
@@ -72,39 +70,15 @@ class SCGITransport(xmlrpc.client.Transport):
         sock.connect(handler)
         return sock
 
-    def _response_split_header(self, response: str) -> tuple[str, str]:
-        try:
-            index = response.index("\n")
-            while response[index + 1] not in string.whitespace:
-                index = response.index("\n", index + 1)
-
-        except (ValueError, IndexError) as e:
-            raise ValueError(
-                "Unable to split response into header and body sections"
-            ) from e
-
-        offset = 2  # Know at least the following character is whitespace
-        try:
-            while response[index + offset] in string.whitespace:
-                offset += 1
-        except IndexError:
-            return response, ""  # Reached the end - there is no body
-
-        # Split by and remove the whitespace
-        return response[:index], response[index + offset :]
-
-    def _parse_response(self, response: io.TextIOBase, verbose: bool) -> Any:
+    def _parse_response(self, response_data: bytes, verbose: bool) -> Any:
         p, u = self.getparser()
 
-        response_body = response.read()
-
-        # Remove SCGI headers from the response.
-        response_header, response_body = self._response_split_header(response_body)
+        header, s, body = response_data.partition(b"\r\n\r\n")
 
         if verbose:
-            print("body:", repr(response_body))
+            print("body:", repr(body))
 
-        p.feed(response_body)
+        p.feed(body)
         p.close()
 
         return u.close()
