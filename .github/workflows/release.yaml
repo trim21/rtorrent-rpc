@@ -29,12 +29,12 @@ jobs:
 
       - name: Generate Changelog
         id: changelog
-        uses: requarks/changelog-action@v1
+        uses: requarks/changelog-action@dba389d
         with:
           token: ${{ github.token }}
           tag: ${{ github.ref_name }}
           writeToFile: false
-          excludeTypes: chore,build,docs,style,ci
+          restrictToTypes: feat,fix,refactor,revert
 
       - name: Upload Github Release
         run: gh release create "${GITHUB_REF}" --notes "${CHANGELOG}"
