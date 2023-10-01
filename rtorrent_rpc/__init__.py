@@ -27,6 +27,14 @@ def _encode_tags(tags: Iterable[str] | None) -> str:
     return ",".join(sorted(quote(t) for t in {x.strip() for x in tags} if t))
 
 
+class _DirectoryRpc(Protocol):
+    def __call__(self, info_hash: str, /) -> str:
+        ...
+
+    def set(self, info_hash: str, value: str, /) -> None:
+        ...
+
+
 class _DownloadRpc(Protocol):
     """this is not a real class, it's a typing protocol for rpc typing"""
 
@@ -35,6 +43,9 @@ class _DownloadRpc(Protocol):
 
     def multicall2(self, _: Literal[""], view: str, *commands: str) -> Iterable[Any]:
         """run multiple rpc calls"""
+
+    directory_base: _DirectoryRpc
+    directory: _DirectoryRpc
 
 
 class _SystemRpc(Protocol):
