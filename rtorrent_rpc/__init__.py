@@ -44,8 +44,13 @@ class _DownloadRpc(Protocol):
     def multicall2(self, _: Literal[""], view: str, *commands: str) -> Iterable[Any]:
         """run multiple rpc calls"""
 
-    directory_base: _DirectoryRpc
-    directory: _DirectoryRpc
+    @property
+    def directory_base(self) -> _DirectoryRpc:
+        """base directory"""
+
+    @property
+    def directory(self) -> _DirectoryRpc:
+        """directory"""
 
 
 class _SystemRpc(Protocol):
