@@ -5,7 +5,12 @@ from urllib.parse import unquote
 
 import bencodepy
 
-__all__ = ["add_completed_resume_file", "get_torrent_info_hash", "parse_tags"]
+__all__ = [
+    "add_completed_resume_file",
+    "get_torrent_info_hash",
+    "parse_tags",
+    "parse_comment",
+]
 
 
 def parse_tags(s: str) -> set[str]:
