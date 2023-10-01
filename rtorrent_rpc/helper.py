@@ -1,6 +1,7 @@
 import hashlib
 from pathlib import Path
 from typing import Any
+from urllib.parse import unquote
 
 import bencodepy
 
@@ -8,12 +9,20 @@ __all__ = ["add_completed_resume_file", "get_torrent_info_hash", "parse_tags"]
 
 
 def parse_tags(s: str) -> set[str]:
+    """ruTorrent compatibility method to parse ``d.custom1`` as tags"""
     tags = set()
     for t in s.split(","):
         tt = t.strip()
         if tt:
             tags.add(tt)
     return tags
+
+
+def parse_comment(s: str) -> str:
+    """ruTorrent compatibility method to parse ``d.custom2`` as torrent comment"""
+    if s.startswith("VRS24mrker"):
+        return unquote(s.removeprefix("VRS24mrker"))
+    return s
 
 
 def get_torrent_info_hash(content: bytes) -> str:
