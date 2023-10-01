@@ -4,7 +4,16 @@ from typing import Any
 
 import bencodepy
 
-__all__ = ["add_completed_resume_file", "get_torrent_info_hash"]
+__all__ = ["add_completed_resume_file", "get_torrent_info_hash", "parse_tags"]
+
+
+def parse_tags(s: str) -> set[str]:
+    tags = set()
+    for t in s.split(","):
+        tt = t.strip()
+        if tt:
+            tags.add(tt)
+    return tags
 
 
 def get_torrent_info_hash(content: bytes) -> str:
