@@ -42,7 +42,7 @@ pre-commit = { version = "==3.4.0", markers = "implementation_name != 'pypy'", p
 #mypy = { version = "==1.4.1", markers = "implementation_name != 'pypy'", python = "^3.9" }
 ruff = "0.0.291"
 sphinx-autobuild = "2021.3.14"
-mypy = "1.5.1"
+mypy = "1.6.1"
 
 [tool.poetry-plugin-bump]
 commit_msg = 'bump: v{version}'
