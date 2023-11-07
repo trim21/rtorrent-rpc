@@ -2,13 +2,13 @@ import time
 import urllib.parse
 import xmlrpc.client
 from collections.abc import Iterable
-from typing import Any, Literal, Protocol, TypeAlias, TypedDict
+from typing import Any, Literal, NotRequired, Protocol, TypeAlias, TypedDict
 from urllib.parse import quote
 
 import bencodepy
-from typing_extensions import NotRequired
 
 from .scgi import SCGIServerProxy
+
 
 __all__ = ["RTorrent", "MultiCall"]
 
@@ -227,6 +227,14 @@ class RTorrent:
     def d_set_tags(self, info_hash: str, tags: Iterable[str]) -> None:
         """set download tags, work with flood and ruTorrent."""
         self.rpc.d.custom1.set(info_hash, _encode_tags(tags))
+
+    def d_set_custom(self, info_hash: str, key: str, value: str) -> int:
+        """set custom key value pair on download"""
+        return self.rpc.d.custom.set(info_hash, key, value)
+
+    def d_get_custom(self, info_hash: str, key: str) -> str:
+        """get custom value by key, return empty str if key not set"""
+        return self.rpc.d.custom.set(info_hash, key)
 
     def d_tracker_send_scrape(self, info_hash: str, delay: Unknown) -> None:
         self.rpc.d.tracker.send_scrape(info_hash, delay)
