@@ -35,6 +35,14 @@ class _DirectoryRpc(Protocol):
         ...
 
 
+class _CustomSet(Protocol):
+    def __call__(self, info_hash: str, key: str, /) -> str:
+        """get download's custom value"""
+
+    def set(self, info_hash: str, key: str, value: str, /) -> int:
+        """set download's custom value"""
+
+
 class _DownloadRpc(Protocol):
     """this is not a real class, it's a typing protocol for rpc typing"""
 
@@ -51,6 +59,10 @@ class _DownloadRpc(Protocol):
     @property
     def directory(self) -> _DirectoryRpc:
         """directory"""
+
+    @property
+    def custom(self) -> _CustomSet:
+        ...
 
 
 class _SystemRpc(Protocol):
