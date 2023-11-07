@@ -242,11 +242,11 @@ class RTorrent:
 
     def d_set_custom(self, info_hash: str, key: str, value: str) -> int:
         """set custom key value pair on download"""
-        return self.rpc.d.custom.set(info_hash, key, value)  # type: ignore
+        return self.d.custom.set(info_hash, key, value)
 
     def d_get_custom(self, info_hash: str, key: str) -> str:
         """get custom value by key, return empty str if key not set"""
-        return self.rpc.d.custom.set(info_hash, key)  # type: ignore
+        return self.d.custom(info_hash, key)
 
     def d_tracker_send_scrape(self, info_hash: str, delay: Unknown) -> None:
         self.rpc.d.tracker.send_scrape(info_hash, delay)
