@@ -240,6 +240,10 @@ class RTorrent:
         """set download tags, work with flood and ruTorrent."""
         self.rpc.d.custom1.set(info_hash, _encode_tags(tags))
 
+    def d_set_comment(self, info_hash: str, comment: str) -> None:
+        """Set comment, work with flood and ruTorrent"""
+        self.rpc.d.custom2.set(info_hash, "VRS24mrker" + quote(comment))
+
     def d_set_custom(self, info_hash: str, key: str, value: str) -> int:
         """set custom key value pair on download"""
         return self.d.custom.set(info_hash, key, value)
