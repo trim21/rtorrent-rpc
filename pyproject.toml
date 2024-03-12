@@ -40,7 +40,7 @@ coverage = "==7.4.3"
 # linter and formatter
 pre-commit = { version = "==3.6.2", markers = "implementation_name != 'pypy'", python = "^3.9" }
 #mypy = { version = "==1.4.1", markers = "implementation_name != 'pypy'", python = "^3.9" }
-ruff = "0.3.0"
+ruff = "0.3.2"
 sphinx-autobuild = "2024.2.4"
 mypy = "1.8.0"
 
