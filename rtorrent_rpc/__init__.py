@@ -5,7 +5,7 @@ from collections.abc import Iterable
 from typing import Any, Literal, Protocol, TypeAlias, TypedDict
 from urllib.parse import quote
 
-import bencodepy
+import bencode2
 from typing_extensions import NotRequired
 
 from .scgi import SCGIServerProxy
@@ -159,8 +159,8 @@ class RTorrent:
             params.append(f'd.custom1.set="{_encode_tags(tags)}"')
 
         if self.rutorrent_compatibility:
-            t = bencodepy.bdecode(content)
-            if b"comment" in t:
+            t = bencode2.bdecode(content)
+            if "comment" in t:
                 params.append(
                     f'd.custom2.set="VRS24mrker{quote(t[b"comment"].decode().strip())}"'
                 )

@@ -25,7 +25,7 @@ classifiers = [
 python = "^3.10"
 # dependencies
 typing-extensions = ">=4.7.1"
-bencode-py = "^4.0.0"
+bencode2 = "^0.0.6"
 
 [tool.poetry.group.docs.dependencies]
 sphinx = { version = "^7.0.0", python = "^3.9" }
