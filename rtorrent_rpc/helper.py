@@ -43,7 +43,7 @@ def add_completed_resume_file(base_save_path: Path, torrent_content: bytes) -> b
     """
     data: dict[str, Any] = bencode2.bdecode(torrent_content, str_key=True)
 
-    piece_length = data["info"][b"piece length"]
+    piece_length = data["info"]["piece length"]
     files = []
 
     t_files = data["info"].get("files")
@@ -51,13 +51,13 @@ def add_completed_resume_file(base_save_path: Path, torrent_content: bytes) -> b
     piece_count = int(len(data["info"]["pieces"]) / 20)
     if t_files:
         for file in t_files:
-            file_path = base_save_path.joinpath(*[p.decode() for p in file[b"path"]])
+            file_path = base_save_path.joinpath(*[p.decode() for p in file["path"]])
             if not file_path.exists():
                 files.append({"complete": 0, "mtime": 0, "priority": 0})
                 continue
 
             stat = file_path.lstat()
-            if stat.st_size == file[b"length"]:
+            if stat.st_size == file["length"]:
                 files.append(
                     {
                         "complete": int(file["length"] / piece_length),
