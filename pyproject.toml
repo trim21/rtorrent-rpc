@@ -41,7 +41,7 @@ coverage = "==7.4.4"
 pre-commit = { version = "==3.7.0", markers = "implementation_name != 'pypy'", python = "^3.9" }
 #mypy = { version = "==1.4.1", markers = "implementation_name != 'pypy'", python = "^3.9" }
 ruff = "0.3.7"
-sphinx-autobuild = "2024.2.4"
+sphinx-autobuild = "2024.4.13"
 mypy = "1.9.0"
 
 [tool.poetry-plugin-bump]
