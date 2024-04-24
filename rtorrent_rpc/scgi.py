@@ -9,6 +9,8 @@
 # such as MultiCall objects.
 #
 # [1] <http://libtorrent.rakshasa.no/wiki/UtilsXmlrpc2scgi>
+from __future__ import annotations
+
 import socket
 import urllib
 import urllib.parse

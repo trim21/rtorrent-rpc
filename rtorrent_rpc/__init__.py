@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import time
 import urllib.parse
 import xmlrpc.client
@@ -16,7 +18,7 @@ Unknown: TypeAlias = Any
 
 
 class RutorrentCompatibilityDisabledError(Exception):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__("you need enable ruTorrent compatibility to use this feature")
 
 
@@ -33,11 +35,9 @@ def _encode_tags(tags: Iterable[str] | None) -> str:
 
 
 class _DirectoryRpc(Protocol):
-    def __call__(self, info_hash: str, /) -> str:
-        ...
+    def __call__(self, info_hash: str, /) -> str: ...
 
-    def set(self, info_hash: str, value: str, /) -> None:
-        ...
+    def set(self, info_hash: str, value: str, /) -> None: ...
 
 
 class _CustomSet(Protocol):
@@ -66,8 +66,7 @@ class _DownloadRpc(Protocol):
         """directory"""
 
     @property
-    def custom(self) -> _CustomSet:
-        ...
+    def custom(self) -> _CustomSet: ...
 
 
 class _SystemRpc(Protocol):
