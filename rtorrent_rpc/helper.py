@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import sys
 from pathlib import Path
 from typing import Any
 from urllib.parse import unquote
@@ -25,10 +26,21 @@ def parse_tags(s: str) -> set[str]:
     return tags
 
 
+if sys.version_info >= (3, 9):
+
+    def __remove_prefix(s: str, prefix: str) -> str:
+        return s.removeprefix(prefix)
+
+else:
+
+    def __remove_prefix(s: str, prefix: str) -> str:
+        return s[len(prefix) :]
+
+
 def parse_comment(s: str) -> str:
     """ruTorrent compatibility method to parse ``d.custom2`` as torrent comment"""
     if s.startswith("VRS24mrker"):
-        return unquote(s.removeprefix("VRS24mrker"))
+        return unquote(__remove_prefix(s, "VRS24mrker"))
     return s
 
 
