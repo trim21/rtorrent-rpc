@@ -138,7 +138,7 @@ class RTorrent:
     def add_torrent_by_file(
         self,
         content: bytes,
-        directory: str,
+        directory_base: str,
         tags: list[str] | None = None,
     ) -> None:
         """
@@ -146,7 +146,7 @@ class RTorrent:
 
         Args:
             content: The content of the torrent file as bytes.
-            directory: The base directory where the downloaded files will be saved.
+            directory_base: The base directory where the downloaded files will be saved.
             tags: A list of tags associated with the torrent. Defaults to None.
                 This argument is compatible with ruTorrent and flood.
         """
@@ -154,7 +154,7 @@ class RTorrent:
             "",
             content,
             'd.tied_to_file.set=""',
-            f'd.directory_base.set="{directory}"',
+            f'd.directory_base.set="{directory_base}"',
             # custom.addtime is used by ruTorrent and flood.
             f"d.custom.set=addtime,{int(time.time())}",
         ]
