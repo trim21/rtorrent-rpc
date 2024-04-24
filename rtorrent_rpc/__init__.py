@@ -4,15 +4,15 @@ import time
 import urllib.parse
 import xmlrpc.client
 from collections.abc import Iterable
-from typing import Any, Literal, Protocol, TypeAlias, TypedDict
+from typing import Any, Literal, Protocol
 from urllib.parse import quote
 
 import bencode2
-from typing_extensions import NotRequired
+from typing_extensions import NotRequired, TypeAlias, TypedDict
 
 from .scgi import SCGIServerProxy
 
-__all__ = ["RTorrent", "MultiCall"]
+__all__ = ["RTorrent", "MultiCall", "RutorrentCompatibilityDisabledError"]
 
 Unknown: TypeAlias = Any
 
