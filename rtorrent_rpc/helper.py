@@ -22,7 +22,7 @@ def parse_tags(s: str) -> set[str]:
     for t in s.split(","):
         tt = t.strip()
         if tt:
-            tags.add(tt)
+            tags.add(unquote(tt))
     return tags
 
 
