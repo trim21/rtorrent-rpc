@@ -15,6 +15,11 @@ __all__ = ["RTorrent", "MultiCall"]
 Unknown: TypeAlias = Any
 
 
+class RutorrentCompatibilityDisabledError(Exception):
+    def __init__(self):
+        super().__init__("you need enable ruTorrent compatibility to use this feature")
+
+
 class MultiCall(TypedDict):
     methodName: str
     params: NotRequired[Any]
@@ -156,6 +161,8 @@ class RTorrent:
         ]
 
         if tags:
+            if not self.rutorrent_compatibility:
+                raise RutorrentCompatibilityDisabledError
             params.append(f'd.custom1.set="{_encode_tags(tags)}"')
 
         if self.rutorrent_compatibility:
