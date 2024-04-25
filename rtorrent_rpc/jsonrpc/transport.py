@@ -48,6 +48,7 @@ class _SCGITransport(Transport):
     def request(self, body: bytes, content_type: str | None = None) -> bytes:
         with self.__connect() as conn:
             for chunk in scgi.encode_request(body, content_type):
+                print(chunk)
                 conn.send(chunk)
 
             chunks = []

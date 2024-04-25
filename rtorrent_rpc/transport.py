@@ -4,7 +4,6 @@ import xmlrpc.client
 from typing import Any
 
 from rtorrent_rpc.jsonrpc import _SCGITransport
-from rtorrent_rpc.scgi import parse_response
 
 
 class SCGITransport(xmlrpc.client.Transport):
@@ -20,15 +19,12 @@ class SCGITransport(xmlrpc.client.Transport):
         verbose: bool = False,
     ) -> Any:
         # Add SCGI headers to the request.
-        return self._parse_response(self._trx.request(request_body, "application/xml"))
+        return self._parse_response(self._trx.request(request_body))
 
     def _parse_response(self, response_data: bytes) -> Any:
-
-        header, body = parse_response(response_data)
-
         p, u = self.getparser()
 
-        p.feed(body)
+        p.feed(response_data)
         p.close()
 
         return u.close()
