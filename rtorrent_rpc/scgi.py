@@ -11,32 +11,62 @@
 # [1] <http://libtorrent.rakshasa.no/wiki/UtilsXmlrpc2scgi>
 from __future__ import annotations
 
+import functools
 import socket
 import urllib
 import urllib.parse
 import xmlrpc.client
-from typing import Any
+from typing import Any, Iterator
 
-__all__ = ["SCGITransport", "SCGIServerProxy"]
+__all__ = ["SCGITransport", "SCGIServerProxy", "encode_request", "parse_response"]
 
 NULL = b"\x00"
+
+
+def encode_request(body: bytes, content_type: str | None = None) -> Iterator[bytes]:
+    length = len(body)
+
+    header_items: list[bytes] = [
+        *(b"CONTENT_LENGTH", NULL, str(length).encode(), NULL),
+        *(b"SCGI", NULL, b"1", NULL),
+    ]
+
+    if content_type:
+        header_items.extend((b"CONTENT_TYPE", NULL, content_type.encode(), NULL))
+
+    header_len = sum(len(c) for c in header_items)
+
+    yield str(header_len).encode()
+    yield b":"
+    yield from header_items
+    yield b","
+    yield body
+
+
+def parse_response(res: bytes) -> tuple[dict[str, str], bytes]:
+    """
+    Args:
+        res: should be full response bytes, including headers and body
+    """
+    raw_header, _, body = res.partition(b"\r\n\r\n")
+    h = __parse_raw_headers(raw_header)
+    assert int(h["content-length"].encode()) == len(body)
+    return h, body
+
+
+def __parse_raw_headers(raw: bytes) -> dict[str, str]:
+    lines = raw.split(b"\r\n")
+    d = {}
+    for line in lines:
+        key, value = line.split(b":")
+        key = key.strip()
+        d[key.decode().lower()] = value.strip().decode()
+    return d
 
 
 class SCGITransport(xmlrpc.client.Transport):
     def __init__(self, *args: Any, **kwargs: Any):
         super().__init__(*args, **kwargs)
-
-    def encode_scgi_headers(self, content_length: int) -> bytes:
-        # Need to use an ordered dict because content length MUST be the first
-        #  key present in the encoded headers.
-        headers = {
-            b"CONTENT_LENGTH": str(content_length).encode("utf-8"),
-            b"SCGI": b"1",
-        }
-
-        encoded = NULL.join(k + NULL + v for k, v in headers.items()) + NULL
-        length = str(len(encoded)).encode("utf-8")
-        return length + b":" + encoded
 
     def single_request(
         self,
@@ -46,12 +76,9 @@ class SCGITransport(xmlrpc.client.Transport):
         verbose: bool = False,
     ) -> Any:
         # Add SCGI headers to the request.
-        header = self.encode_scgi_headers(len(request_body))
-
         with self.__connect(host, handler) as sock:
-            sock.send(header)
-            sock.send(b",")
-            sock.send(request_body)
+            for chunk in encode_request(request_body):
+                sock.send(chunk)
             with sock.makefile(mode="rb", errors="strict") as res:
                 return self._parse_response(res.read(), verbose)
 
@@ -73,12 +100,13 @@ class SCGITransport(xmlrpc.client.Transport):
         return sock
 
     def _parse_response(self, response_data: bytes, verbose: bool) -> Any:
-        p, u = self.getparser()
 
-        header, s, body = response_data.partition(b"\r\n\r\n")
+        header, body = parse_response(response_data)
 
         if verbose:
             print("body:", repr(body))
+
+        p, u = self.getparser()
 
         p.feed(body)
         p.close()
@@ -113,6 +141,7 @@ class SCGIServerProxy(xmlrpc.client.ServerProxy):
         )
 
 
+@functools.lru_cache
 def splitport(hostport: str) -> tuple[str, int]:
     """
     splitport('host:port') --> 'host', 'port'.
