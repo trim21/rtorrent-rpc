@@ -35,7 +35,7 @@ If torrent name of file name contains any emoji,
 you can't retrieve correct torrent name or file name through xmlrpc.
 
 Please consider use a rtorrent distro with json-rpc support,
-for example: [jesec/rtorrent](https://github.com/jesec/rtorrent)
+for example: [jesec/rtorrent](https://github.com/jesec/rtorrent), which support utf8 correctly.
 
 If your rtorrent distro support jsonrpc,
 you can use send json-rpc request with `RTorrent(...).jsonrpc.call(...)`.
