@@ -3,10 +3,10 @@ from __future__ import annotations
 import xmlrpc.client
 from typing import Any
 
-from rtorrent_rpc.jsonrpc import _SCGITransport
+from rtorrent_rpc._jsonrpc.transport import _SCGITransport
 
 
-class SCGITransport(xmlrpc.client.Transport):
+class SsciXmlTransport(xmlrpc.client.Transport):
     def __init__(self, *args: Any, address: str, **kwargs: Any):
         super().__init__(*args, **kwargs)
         self._trx = _SCGITransport(address)

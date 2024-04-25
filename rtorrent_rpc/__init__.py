@@ -11,11 +11,17 @@ from urllib.parse import quote
 import bencode2
 from typing_extensions import NotRequired, TypeAlias, TypedDict
 
-from . import jsonrpc
+from rtorrent_rpc._jsonrpc import JSONRpc, JSONRpcError
+from rtorrent_rpc._jsonrpc.transport import BadStatusError
+from rtorrent_rpc._transport import SsciXmlTransport
 
-__all__ = ["RTorrent", "MultiCall", "RutorrentCompatibilityDisabledError"]
-
-from .transport import SCGITransport
+__all__ = [
+    "RTorrent",
+    "MultiCall",
+    "RutorrentCompatibilityDisabledError",
+    "BadStatusError",
+    "JSONRpcError",
+]
 
 Unknown: TypeAlias = Any
 
@@ -124,7 +130,7 @@ class RTorrent:
     """
 
     rpc: xmlrpc.client.ServerProxy
-    jsonrpc: jsonrpc.JSONRpc
+    jsonrpc: JSONRpc
 
     def __init__(self, address: str, rutorrent_compatibility: bool = True):
         u = urllib.parse.urlparse(address)
@@ -133,7 +139,7 @@ class RTorrent:
         else:
             self.rpc = xmlrpc.client.ServerProxy(address)
 
-        self.jsonrpc = jsonrpc.JSONRpc(address=address)
+        self.jsonrpc = JSONRpc(address=address)
 
         self.rutorrent_compatibility: bool = rutorrent_compatibility
 
@@ -1073,7 +1079,7 @@ class SCGIServerProxy(xmlrpc.client.ServerProxy):
             raise OSError("SCGIServerProxy Only Support XML-RPC over SCGI protocol")
 
         if transport is None:
-            transport = SCGITransport(
+            transport = SsciXmlTransport(
                 use_datetime=use_datetime,
                 address=uri,
                 use_builtin_types=use_builtin_types,

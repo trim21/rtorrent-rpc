@@ -6,7 +6,7 @@ from urllib.parse import urlparse
 
 from urllib3 import HTTPConnectionPool, HTTPSConnectionPool
 
-from rtorrent_rpc import scgi
+from rtorrent_rpc import _scgi as scgi
 
 
 class BadStatusError(Exception):

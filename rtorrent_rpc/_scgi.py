@@ -4,7 +4,7 @@ from typing import Iterator
 
 __all__ = ["encode_request", "parse_response"]
 
-NULL = b"\x00"
+NULL = (0).to_bytes()
 
 
 def encode_request(body: bytes, content_type: str | None = None) -> Iterator[bytes]:
