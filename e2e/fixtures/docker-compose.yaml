@@ -9,7 +9,6 @@ services:
 
   rtorrent-unix:
     image: jesec/rtorrent
-    user: 0:0
     command: -o system.daemon.set=true -o 'network.scgi.open_local=/var/run/rtorrent/rtorrent.sock'
     # will create a socket file at ./run/rtorrent.sock
     volumes:
