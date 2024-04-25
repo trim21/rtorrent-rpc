@@ -1,4 +1,4 @@
-from rtorrent_rpc import scgi
+from rtorrent_rpc import _scgi as scgi
 
 
 def test_encode_request():
