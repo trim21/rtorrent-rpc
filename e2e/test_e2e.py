@@ -5,6 +5,9 @@ from rtorrent_rpc import RTorrent
 
 def test_unix_path():
     p = Path(__file__).joinpath("../..").joinpath("tests/fixtures/run/rtorrent.sock")
+
+    assert p.exists(), "please start developing container in 'e2e/fixtures' first"
+
     t = RTorrent("scgi://" + p.resolve().as_posix())
 
     assert t.system_list_methods()
