@@ -4,7 +4,7 @@ from rtorrent_rpc import RTorrent
 
 
 def test_unix_path():
-    p = Path(__file__, "../../tests/fixtures/run/rtorrent.sock").resolve()
+    p = Path(__file__, "../fixtures/run/rtorrent.sock").resolve()
 
     assert p.exists(), "please start developing container in 'e2e/fixtures' first"
 
