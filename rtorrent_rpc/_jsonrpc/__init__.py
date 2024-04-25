@@ -9,7 +9,7 @@ import threading
 from typing import Any
 from urllib.parse import urlparse
 
-from rtorrent_rpc.jsonrpc.transport import Transport, _HTTPTransport, _SCGITransport
+from rtorrent_rpc._jsonrpc.transport import Transport, _HTTPTransport, _SCGITransport
 
 try:
     import orjson
