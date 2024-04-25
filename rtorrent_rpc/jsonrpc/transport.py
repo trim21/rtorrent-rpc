@@ -35,13 +35,12 @@ class _SCGITransport(Transport):
     def __init__(self, address: str) -> None:
         u = urlparse(address)
         self.__path = None
-        print(u)
         if u.hostname:
             # tcp
             assert u.port
             self.__host = u.hostname
             assert u.port, "scgi over tcp must have a port number"
-            self._port = u.port
+            self.__port = u.port
         else:
             # unix domain
             self.__path = u.path
