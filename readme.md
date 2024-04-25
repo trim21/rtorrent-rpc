@@ -27,7 +27,7 @@ client = RTorrent(address='scgi://127.0.0.1:5000')
 unix_client = RTorrent(address='scgi:///home/ubuntu/.local/share/rtorrent.sock')
 ```
 
-## Known problem:
+## Known Problem
 
 rTorrent's [xmlrpc do not support all utf8 characters](https://github.com/rakshasa/rtorrent/issues/1250), for example, emoji.
 
