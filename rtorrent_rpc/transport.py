@@ -22,12 +22,9 @@ class SCGITransport(xmlrpc.client.Transport):
         # Add SCGI headers to the request.
         return self._parse_response(self._trx.request(request_body, "application/xml"))
 
-    def _parse_response(self, response_data: bytes, verbose: bool) -> Any:
+    def _parse_response(self, response_data: bytes) -> Any:
 
         header, body = parse_response(response_data)
-
-        if verbose:
-            print("body:", repr(body))
 
         p, u = self.getparser()
 
