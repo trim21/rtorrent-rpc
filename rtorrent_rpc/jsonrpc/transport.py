@@ -34,6 +34,7 @@ class _SCGITransport(Transport):
 
     def __init__(self, address: str) -> None:
         u = urlparse(address)
+        self.__path = None
         if u.hostname:
             # tcp
             assert u.port

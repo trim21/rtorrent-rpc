@@ -12,8 +12,7 @@ def test_unix_path():
 
 
 def test_tcp():
-    t = RTorrent("scgi://127.0.0.1:5000")
-    assert t.system_list_methods()
+    t = RTorrent("scgi://127.0.0.1:5001")
 
     assert t.system_list_methods()
     assert t.jsonrpc.call("system.listMethods", [])
