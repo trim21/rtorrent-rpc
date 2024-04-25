@@ -52,8 +52,6 @@ class JSONRpcError(Exception):
 
 
 class JSONRpc:
-    __host: str
-    __port: int
     _id: int
     _lock: threading.Lock
     _transport: Transport
@@ -69,11 +67,6 @@ class JSONRpc:
             self._transport = _HTTPTransport(address)
         else:
             raise ValueError(f"unsupported protocol {url.scheme}")
-
-        assert url.hostname
-        self.__host = url.hostname
-        assert url.port
-        self.__port = url.port
 
         self._id = 0
         self._lock = threading.Lock()
