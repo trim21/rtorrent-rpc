@@ -166,7 +166,7 @@ class RTorrent:
 
         if self.rutorrent_compatibility:
             t = bencode2.bdecode(content)
-            if "comment" in t:
+            if b"comment" in t:
                 params.append(
                     f'd.custom2.set="VRS24mrker{quote(t[b"comment"].decode().strip())}"'
                 )
