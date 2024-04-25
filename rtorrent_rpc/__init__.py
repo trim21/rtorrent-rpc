@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import time
+import urllib
 import urllib.parse
 import xmlrpc.client
 from collections.abc import Iterable
@@ -10,9 +11,11 @@ from urllib.parse import quote
 import bencode2
 from typing_extensions import NotRequired, TypeAlias, TypedDict
 
-from .scgi import SCGIServerProxy
+from . import jsonrpc
 
 __all__ = ["RTorrent", "MultiCall", "RutorrentCompatibilityDisabledError"]
+
+from .transport import SCGITransport
 
 Unknown: TypeAlias = Any
 
@@ -121,6 +124,7 @@ class RTorrent:
     """
 
     rpc: xmlrpc.client.ServerProxy
+    jsonrpc: jsonrpc.JSONRpc
 
     def __init__(self, address: str, rutorrent_compatibility: bool = True):
         u = urllib.parse.urlparse(address)
@@ -128,6 +132,8 @@ class RTorrent:
             self.rpc = SCGIServerProxy(address)
         else:
             self.rpc = xmlrpc.client.ServerProxy(address)
+
+        self.jsonrpc = jsonrpc.JSONRpc(address=address)
 
         self.rutorrent_compatibility: bool = rutorrent_compatibility
 
@@ -1050,3 +1056,32 @@ _methods = [
     "cfg.scrape_interval.idle.set",
     "d.last_scrape.send_set",
 ]
+
+
+class SCGIServerProxy(xmlrpc.client.ServerProxy):
+    def __init__(
+        self,
+        uri: str,
+        transport: xmlrpc.client.Transport | None = None,
+        use_datetime: bool = False,
+        use_builtin_types: bool = False,
+        **kwargs: Any,
+    ):
+        u = urllib.parse.urlparse(uri)
+
+        if u.scheme != "scgi":
+            raise OSError("SCGIServerProxy Only Support XML-RPC over SCGI protocol")
+
+        if transport is None:
+            transport = SCGITransport(
+                use_datetime=use_datetime,
+                address=uri,
+                use_builtin_types=use_builtin_types,
+            )
+
+        # Feed some junk in here, but we'll fix it afterwards
+        super().__init__(
+            urllib.parse.urlunparse(u._replace(scheme="http")),
+            transport=transport,
+            **kwargs,
+        )

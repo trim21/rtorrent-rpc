@@ -1,0 +1,13 @@
+services:
+  rtorrent-tcp:
+    image: jesec/rtorrent
+    command: -o system.daemon.set=true -o 'network.scgi.open_port = 0.0.0.0:5000'
+    ports:
+      - 5000:5000
+
+  rtorrent-unix:
+    image: jesec/rtorrent
+    command: -o system.daemon.set=true -o 'network.scgi.open_local = /var/run/rtorrent/rtorrent.sock'
+    # will create a socket file at ./run/rtorrent.sock
+    volumes:
+      - "./run/:/var/run/rtorrent"

@@ -29,8 +29,16 @@ unix_client = RTorrent(address='scgi:///home/ubuntu/.local/share/rtorrent.sock')
 
 ## Known problem:
 
-rTorrent's xmlrpc doesn't support emoji. If torrent name of file name contains any emoji,
+rTorrent's [xmlrpc do not support all utf8 characters](https://github.com/rakshasa/rtorrent/issues/1250), for example, emoji.
+
+If torrent name of file name contains any emoji,
 you can't retrieve correct torrent name of file name through xmlrpc.
+
+Please consider use a rtorrent distro with json-rpc support,
+for example: [jesec/rtorrent](https://github.com/jesec/rtorrent)
+
+If your rtorrent distro support jsonrpc,
+you can use send json-rpc request with `RTorrent(...).jsonrpc.call(...)`.
 
 ## License
 
