@@ -51,7 +51,7 @@ jobs:
       - uses: trim21/install-poetry-project@dist/v2
 
       - name: run tests
-        run: coverage run -a -m pytest
+        run: coverage run -a -m pytest e2e
 
       - uses: codecov/codecov-action@v4
         with:
