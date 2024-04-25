@@ -50,6 +50,15 @@ jobs:
       - uses: trim21/setup-poetry@dist/v2
       - uses: trim21/install-poetry-project@dist/v2
 
+      - run: docker compose ps
+        working-directory: ./e2e/fixtures
+
+      - run: docker compose logs rtorrent-unix
+        working-directory: ./e2e/fixtures
+
+      - run: docker compose logs rtorrent-tcp
+        working-directory: ./e2e/fixtures
+
       - name: run tests
         run: coverage run -a -m pytest e2e
 
