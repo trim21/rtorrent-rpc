@@ -41,7 +41,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: docker compose up -d
-        working-directory: ./tests/fixtures
+        working-directory: ./e2e/fixtures
 
       - uses: actions/setup-python@v5
         with:
