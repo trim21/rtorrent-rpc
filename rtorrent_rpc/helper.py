@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import enum
 import hashlib
 import sys
 from pathlib import Path
@@ -10,6 +11,7 @@ import bencode2
 
 __all__ = [
     "add_completed_resume_file",
+    "add_fast_resume_file",
     "get_torrent_info_hash",
     "parse_tags",
     "parse_comment",
@@ -50,9 +52,35 @@ def get_torrent_info_hash(content: bytes) -> str:
     return hashlib.sha1(bencode2.bencode(data[b"info"])).hexdigest()
 
 
-def add_completed_resume_file(base_save_path: Path, torrent_content: bytes) -> bytes:
-    """update torrent content, add resume data to torrent.
+class LibTorrentFilePriority(enum.IntEnum):
+    OFF = 0
+    NORMAL = 1
+    HIGH = 2
 
+
+def add_fast_resume_file(base_save_path: Path, torrent_content: bytes) -> bytes:
+    """update torrent content, add resume data to torrent,
+    skip checking file exists on disk.
+    """
+
+    return __add_resume_file(
+        base_save_path, torrent_content, LibTorrentFilePriority.NORMAL
+    )
+
+
+def add_completed_resume_file(base_save_path: Path, torrent_content: bytes) -> bytes:
+    """update torrent content, add resume data to torrent."""
+    return __add_resume_file(
+        base_save_path, torrent_content, LibTorrentFilePriority.OFF
+    )
+
+
+def __add_resume_file(
+    base_save_path: Path,
+    torrent_content: bytes,
+    un_complete_file_prop,
+) -> bytes:
+    """
     based on [rtorrent_fast_resume.pl](https://github.com/rakshasa/rtorrent/blob/master/doc/rtorrent_fast_resume.pl)
     """
     data: dict[str, Any] = bencode2.bdecode(torrent_content, str_key=True)
@@ -67,20 +95,25 @@ def add_completed_resume_file(base_save_path: Path, torrent_content: bytes) -> b
         for file in t_files:
             file_path = base_save_path.joinpath(*[p.decode() for p in file["path"]])
             if not file_path.exists():
-                files.append({"complete": 0, "mtime": 0, "priority": 0})
+                files.append(
+                    {"complete": 0, "mtime": 0, "priority": un_complete_file_prop}
+                )
                 continue
 
             stat = file_path.lstat()
-            if stat.st_size == file["length"]:
+            if stat.st_size != file["length"]:
                 files.append(
-                    {
-                        "complete": int(file["length"] / piece_length),
-                        "mtime": int(stat.st_mtime),
-                        "priority": 1,
-                    }
+                    {"complete": 0, "mtime": 0, "priority": un_complete_file_prop}
                 )
-            else:
-                files.append({"complete": 0, "mtime": 0, "priority": 1})
+                continue
+
+            files.append(
+                {
+                    "complete": int(file["length"] / piece_length),
+                    "mtime": int(stat.st_mtime),
+                    "priority": 1,
+                }
+            )
     else:
         try:
             stat = base_save_path.joinpath(data["info"]["name"].decode()).lstat()
