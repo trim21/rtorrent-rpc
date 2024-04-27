@@ -85,7 +85,7 @@ def add_completed_resume_file(base_save_path: Path, torrent_content: bytes) -> b
 def __add_resume_file(
     base_save_path: Path,
     torrent_content: bytes,
-    un_complete_file_prop,
+    un_complete_file_prop: int,
 ) -> bytes:
     """
     based on [rtorrent_fast_resume.pl](https://github.com/rakshasa/rtorrent/blob/master/doc/rtorrent_fast_resume.pl)
