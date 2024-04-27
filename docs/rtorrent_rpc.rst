@@ -1,10 +1,11 @@
-RTorrent
+rtorrent_rpc
 ========
 
 .. automodule:: rtorrent_rpc
 
 .. autoclass:: RTorrent
     :members:
+    :special-members: __init__
 
 
 .. autoclass:: _DownloadRpc
@@ -14,4 +15,10 @@ RTorrent
     :members:
 
 .. autoclass:: _TrackerRpc
+    :members:
+
+.. autoclass:: JSONRpc
+    :members:
+
+.. autoclass:: Unknown
     :members:

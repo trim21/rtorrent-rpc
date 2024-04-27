@@ -22,7 +22,8 @@ quick start
    :maxdepth: 1
    :caption: Contents:
 
-   RTorrent.rst
+   rtorrent_rpc.rst
+   helper.rst
 
 
 Indices and tables

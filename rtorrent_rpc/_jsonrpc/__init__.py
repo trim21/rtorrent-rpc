@@ -52,11 +52,16 @@ class JSONRpcError(Exception):
 
 
 class JSONRpc:
+    """
+    this class is exposed as ``RTorrent(...).jsonrpc``,
+    you do not need to construct it by yourself.
+    """
+
     _id: int
     _lock: threading.Lock
     _transport: Transport
 
-    __slots__ = ("__host", "__port", "_id", "_lock", "_transport")
+    __slots__ = ("_id", "_lock", "_transport")
 
     def __init__(self, address: str):
         url = urlparse(address)
@@ -72,10 +77,11 @@ class JSONRpc:
         self._lock = threading.Lock()
 
     def call(self, method: str, params: Any = None) -> Any:
+        """send a json-rpc call"""
         with self._lock:
             id = self._id
             # unlikely to have 100w concurrent request...
-            self._id = (self._id + 1) % 1000000
+            self._id = (id + 1) % 1000000
 
         req = _encode_json(
             {"jsonrpc": "2.0", "id": id, "method": method, "params": params}

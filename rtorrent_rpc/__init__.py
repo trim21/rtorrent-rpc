@@ -121,18 +121,29 @@ class RTorrent:
 
         rt = RTorrent('http://127.0.0.1')
 
+    by default, ``/RPC2`` path is used.
 
-    Underling ``xmlrpc.client.ServerProxy`` are exposed as instance property ``.rpc``,
-    you can use ``rt.rpc`` for direct rpc call.
 
-    :param address: rtorrent rpc address
-    :param rutorrent_compatibility: compatibility for ruTorrent or flood.
     """
 
     rpc: xmlrpc.client.ServerProxy
+    """
+    Underling ``xmlrpc.client.ServerProxy`` are exposed as instance property ``.rpc``,
+    you can use ``rt.rpc`` for direct rpc call.
+    """
+
     jsonrpc: JSONRpc
+    """
+    a :class:`JSONRpc` instance to send rpc request with json-rpc.
+    """
 
     def __init__(self, address: str, rutorrent_compatibility: bool = True):
+        """
+        Args:
+            address: rtorrent rpc address
+            rutorrent_compatibility: compatibility for ruTorrent or flood.
+        """
+
         u = urllib.parse.urlparse(address)
         if u.scheme == "scgi":
             self.rpc = SCGIServerProxy(address)
@@ -218,11 +229,9 @@ class RTorrent:
     def system(self) -> _SystemRpc:
         """method call with ``system`` prefix
 
-        Example:
+        .. code-block:: python
 
-            .. code-block:: python
-
-                rt.system.listMethods(...)
+            rt.system.listMethods(...)
         """
         return self.rpc.system  # type: ignore
 
@@ -234,12 +243,10 @@ class RTorrent:
     def d(self) -> _DownloadRpc:
         """method call with ``d`` prefix
 
-        Example:
+        .. code-block:: python
 
-            .. code-block:: python
-
-                rt.d.save_resume(...)
-                rt.d.open(...)
+            rt.d.save_resume(...)
+            rt.d.open(...)
         """
         return self.rpc.d  # type: ignore
 
@@ -271,17 +278,20 @@ class RTorrent:
         return self.d.custom(info_hash, key)
 
     def d_tracker_send_scrape(self, info_hash: str, delay: Unknown) -> None:
+        """force announce"""
         self.rpc.d.tracker.send_scrape(info_hash, delay)
+
+    def d_add_tracker(self, info_hash: str, url: str, *, group: int = 0) -> None:
+        """add a tracker to download"""
+        self.rpc.d.tracker.insert(info_hash, group, url)
 
     @property
     def t(self) -> _TrackerRpc:
         """method call with ``t`` prefix
 
-        Example:
+        .. code-block:: python
 
-            .. code-block:: python
-
-                rt.t.is_enabled(...)
+            rt.t.is_enabled(...)
         """
         return self.rpc.t  # type: ignore
 
@@ -293,19 +303,13 @@ class RTorrent:
         """disable a tracker of download"""
         self.rpc.t.is_enabled.set(f"{info_hash}:t{tracker_index}", 0)
 
-    def d_add_tracker(self, info_hash: str, url: str, *, group: int = 0) -> None:
-        """add a tracker to download"""
-        self.rpc.d.tracker.insert(info_hash, group, url)
-
     @property
     def f(self) -> _FileRpc:
         """method call with ``d`` prefix
 
-        Example:
+        .. code-block:: python
 
-            .. code-block:: python
-
-                rt.f.multicall("<info_hash>", "", "f.path=")
+            rt.f.multicall("<info_hash>", "", "f.path=")
         """
         return self.rpc.f  # type: ignore
 

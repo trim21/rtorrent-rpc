@@ -61,6 +61,9 @@ class LibTorrentFilePriority(enum.IntEnum):
 def add_fast_resume_file(base_save_path: Path, torrent_content: bytes) -> bytes:
     """update torrent content, add resume data to torrent,
     skip checking file exists on disk.
+
+    Warnings:
+        this may cause rtorrent into a invalid state and causing bugs, use at your own risk.
     """
 
     return __add_resume_file(
@@ -69,7 +72,11 @@ def add_fast_resume_file(base_save_path: Path, torrent_content: bytes) -> bytes:
 
 
 def add_completed_resume_file(base_save_path: Path, torrent_content: bytes) -> bytes:
-    """update torrent content, add resume data to torrent."""
+    """update torrent content, add resume data to torrent.
+
+    Warnings:
+        this may cause rtorrent into a invalid state and causing bugs, use at your own risk.
+    """
     return __add_resume_file(
         base_save_path, torrent_content, LibTorrentFilePriority.OFF
     )
@@ -78,7 +85,7 @@ def add_completed_resume_file(base_save_path: Path, torrent_content: bytes) -> b
 def __add_resume_file(
     base_save_path: Path,
     torrent_content: bytes,
-    un_complete_file_prop: int,
+    un_complete_file_prop,
 ) -> bytes:
     """
     based on [rtorrent_fast_resume.pl](https://github.com/rakshasa/rtorrent/blob/master/doc/rtorrent_fast_resume.pl)
