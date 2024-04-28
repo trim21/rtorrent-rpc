@@ -2,6 +2,7 @@
 
 [![PyPI](https://img.shields.io/pypi/v/rtorrent-rpc)](https://pypi.org/project/rtorrent-rpc/)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/rtorrent-rpc)](https://pypi.org/project/rtorrent-rpc/)
+[![Documentation Status](https://readthedocs.org/projects/rtorrent-rpc/badge/)](https://rtorrent-rpc.readthedocs.io/)
 
 `rtorrent-rpc` is a python wrapper on top of rtorrent XML RPC protocol,
 hosted on GitHub at [github.com/trim21/rtorrent-rpc](https://github.com/trim21/rtorrent-rpc)
