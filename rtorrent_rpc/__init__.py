@@ -167,6 +167,11 @@ class RTorrent:
         """
         Add a torrent to the client by providing the torrent file content as bytes.
 
+        Note:
+            rTorrent need some time to handle your torrent,
+            there is a chance info_hash of the torrent you just added is not inoperable.
+            In that case, you need wait some time after you just add a torrent.
+
         Args:
             content: The content of the torrent file as bytes.
             directory_base: The base directory where the downloaded files will be saved.

@@ -1,5 +1,5 @@
 rtorrent_rpc
-========
+============
 
 .. automodule:: rtorrent_rpc
 
