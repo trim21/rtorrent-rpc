@@ -12,7 +12,13 @@ Document is hosted at https://rtorrent-rpc.readthedocs.io/ by readthedocs.
 ## Introduction
 
 ```console
-pip install rtorrent-rpc -U
+pip install rtorrent-rpc
+```
+
+if you prefer [orjson](https://github.com/ijl/orjson) as jsonlib:
+
+```console
+pip install 'rtorrent-rpc[orjson]'
 ```
 
 ## Contributing

@@ -26,6 +26,9 @@ typing-extensions = ">=4.7.1"
 bencode2 = ">=0.0.6,<1"
 urllib3 = "^2.2.1"
 
+[tool.poetry.group.orjson.dependencies]
+orjson = ">3.9.0"
+
 [tool.poetry.group.docs.dependencies]
 sphinx = { version = "^7.0.0", python = "^3.9" }
 furo = { version = "^2024.0.0", python = "^3.9" }
