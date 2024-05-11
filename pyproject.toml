@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "rtorrent-rpc"
-version = "0.6.2"
+version = "0.6.3"
 description = "Typed rtorrent rpc client"
 authors = ["Trim21 <i@trim21.me>"]
 readme = 'readme.md'
@@ -25,9 +25,10 @@ python = "^3.8"
 typing-extensions = ">=4.7.1"
 bencode2 = ">=0.0.6,<1"
 urllib3 = "^2.2.1"
+orjson = { version = '>3.0.0,<4', optional = true }
 
-[tool.poetry.group.orjson.dependencies]
-orjson = ">3.9.0"
+[tool.poetry.extras]
+orjson = ['orjson']
 
 [tool.poetry.group.docs.dependencies]
 sphinx = { version = "^7.0.0", python = "^3.9" }
