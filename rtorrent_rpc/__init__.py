@@ -40,7 +40,10 @@ def _encode_tags(tags: Iterable[str] | None) -> str:
     if not tags:
         return ""
 
-    return ",".join(sorted(quote(t) for t in {x.strip() for x in tags} if t))
+    if isinstance(tags, str):
+        return quote(tags.strip())
+
+    return ",".join(quote(t) for t in sorted({x.strip() for x in tags}) if t)
 
 
 class _DirectoryRpc(Protocol):
@@ -162,7 +165,7 @@ class RTorrent:
         self,
         content: bytes,
         directory_base: str,
-        tags: list[str] | None = None,
+        tags: Iterable[str] | None = None,
     ) -> None:
         """
         Add a torrent to the client by providing the torrent file content as bytes.
@@ -175,7 +178,7 @@ class RTorrent:
         Args:
             content: The content of the torrent file as bytes.
             directory_base: The base directory where the downloaded files will be saved.
-            tags: A list of tags associated with the torrent. Defaults to None.
+            tags: A sequence of tags associated with the torrent. Defaults to None.
                 This argument is compatible with ruTorrent and flood.
         """
         params: list[str | bytes] = [
