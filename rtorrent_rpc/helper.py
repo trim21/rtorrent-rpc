@@ -47,7 +47,7 @@ def parse_comment(s: str) -> str:
 
 
 def get_torrent_info_hash(content: bytes) -> str:
-    """get torrent info_hash in low case string"""
+    """generate torrent info_hash v1 in low case hex string"""
     data = bencode2.bdecode(content)
     return hashlib.sha1(bencode2.bencode(data[b"info"])).hexdigest()
 

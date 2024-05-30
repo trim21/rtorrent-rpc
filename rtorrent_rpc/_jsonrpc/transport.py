@@ -1,12 +1,17 @@
 from __future__ import annotations
 
+import os
 import socket
+import ssl
 from typing import Protocol
 from urllib.parse import urlparse
 
+import certifi
 from urllib3 import HTTPConnectionPool, HTTPSConnectionPool
 
 from rtorrent_rpc import _scgi as scgi
+
+_VALIDATE_ENV_KEY = "PY_RTORRENT_RPC_DISABLE_TLS_CERT"
 
 
 class BadStatusError(Exception):
@@ -88,7 +93,15 @@ class _HTTPTransport(Transport):
         if self.u.scheme == "http":
             self._pool = HTTPConnectionPool(self.host, self.port)
         elif self.u.scheme == "https":
-            self._pool = HTTPSConnectionPool(self.host, self.port)
+            if os.environ.get(_VALIDATE_ENV_KEY) == "1":
+                self._pool = HTTPSConnectionPool(self.host, self.port)
+            else:
+                self._pool = HTTPSConnectionPool(
+                    self.host,
+                    self.port,
+                    ca_certs=certifi.where(),
+                    cert_reqs=ssl.CERT_REQUIRED,
+                )
 
     def request(self, body: bytes, content_type: str | None = None) -> bytes:
         headers = {}

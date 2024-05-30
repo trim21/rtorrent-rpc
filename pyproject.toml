@@ -24,8 +24,9 @@ python = "^3.8"
 # dependencies
 typing-extensions = ">=4.7.1"
 bencode2 = ">=0.0.6,<1"
-urllib3 = "^2.2.1"
+urllib3 = { version = "^2.2.1", extras = ['secure'] }
 orjson = { version = '>3.0.0,<4', optional = true }
+certifi = { version = '>=2024.2.2', optional = true }
 
 [tool.poetry.extras]
 orjson = ['orjson']

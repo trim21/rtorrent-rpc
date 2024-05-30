@@ -2,4 +2,4 @@ version: 3
 
 tasks:
   docs:
-    cmd: sphinx-autobuild docs/ docs/_build/ --watch rtorrent_rpc
+    cmd: sphinx-autobuild docs/ docs/_build/ --watch rtorrent_rpc --port 8920
