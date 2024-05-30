@@ -1362,4 +1362,4 @@ orjson = ["orjson"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "143fa6cf45d812d8f2b172c376b2e89c0382986f2ad2181b4b745ed30d345c3c"
+content-hash = "ec301d441912b92fc1c74b2299084e946db79db0007158542a04a2068e36469a"
