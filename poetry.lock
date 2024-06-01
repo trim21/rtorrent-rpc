@@ -70,52 +70,53 @@ lxml = ["lxml"]
 
 [[package]]
 name = "bencode2"
-version = "0.0.27"
+version = "0.1.0"
 description = "A fast and correct bencode serialize/deserialize library"
 optional = false
 python-versions = "<4.0,>=3.8"
 files = [
-    {file = "bencode2-0.0.27-cp310-cp310-macosx_10_16_x86_64.whl", hash = "sha256:be0b344577f9dccace543fc391ce560efdbfabb0d4d8918fb2c86f037b71acbf"},
-    {file = "bencode2-0.0.27-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:50b3879378ed86d9ca292f1ea35c7f2ef801f2adbf064e82e7da309df165798e"},
-    {file = "bencode2-0.0.27-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:5f9ebe741b9420e35a753ed31bf222e3935d807ae027d1d1713f034f0b89b329"},
-    {file = "bencode2-0.0.27-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:9da756f689b92edd1fe7344e652677bf3a9e003f2e6d9a99388d4f0fa5bc7c0f"},
-    {file = "bencode2-0.0.27-cp310-cp310-musllinux_1_2_aarch64.whl", hash = "sha256:d99ba455ac3d88e23bbc2852b11ab7d57f1d78862e753b3fccf35227deb35376"},
-    {file = "bencode2-0.0.27-cp310-cp310-musllinux_1_2_x86_64.whl", hash = "sha256:01c39f781ead7d86fb22f08434a656bb015dd8dc49cbc8f97487487fdc584576"},
-    {file = "bencode2-0.0.27-cp310-cp310-win_amd64.whl", hash = "sha256:bb3f5bfe5e94b8998e81b3542e0d23a21ededc27eac429be0ec0e19a6cb57229"},
-    {file = "bencode2-0.0.27-cp311-cp311-macosx_10_16_x86_64.whl", hash = "sha256:ccf99b965e3c196778d5fdec18c02fde425d6bb4a20c852f6f6275d2667643f2"},
-    {file = "bencode2-0.0.27-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:8d23b85f246979035a6d7bd3761693c6da746a4293803cb19ce51365ad7d1f15"},
-    {file = "bencode2-0.0.27-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:eeaa65246f8e291f2762238f7010c64a079016b0372baf584aafb88db40974a6"},
-    {file = "bencode2-0.0.27-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:84e4d5b8682f2ed8648e318aa876926b5a37dbe87b87ab47a4f639f0e4111fd4"},
-    {file = "bencode2-0.0.27-cp311-cp311-musllinux_1_2_aarch64.whl", hash = "sha256:b3e73a3459a55a8356dcb70ff668adfd06eab1eb35f6d1b04011ce1ba71624a7"},
-    {file = "bencode2-0.0.27-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:9d3948b5021812bb75840e9f1ef125570365ac292f5b6eda97f77b3e07037aa9"},
-    {file = "bencode2-0.0.27-cp311-cp311-win_amd64.whl", hash = "sha256:affe86d0a0f610f8376c0c2d76f182388e441f8d6216241be328a5e828461af3"},
-    {file = "bencode2-0.0.27-cp312-cp312-macosx_10_16_x86_64.whl", hash = "sha256:0a23975090fcb5c08eec7e6bddf0c1f3594f04303a7e37afcac043d4e0d7a929"},
-    {file = "bencode2-0.0.27-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:0a1bc97cbf5ba0c35d1c357055628cb2a619fbce7582d0b811e9ef407eb49eab"},
-    {file = "bencode2-0.0.27-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:c80307be1b35190b307268a23113761efea5254cc0fbcc9589b1c76accdccdb5"},
-    {file = "bencode2-0.0.27-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:faf120f0b4e1cf6e2f577b05108e41a002a7a40575507bb74e7e0802474a00dc"},
-    {file = "bencode2-0.0.27-cp312-cp312-musllinux_1_2_aarch64.whl", hash = "sha256:a84b069fe6bcac9e494be8532d020879dcc9eab96d1f2e8022f034b2e4121476"},
-    {file = "bencode2-0.0.27-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:b5f209d2870753211d5324831ff4f987c1eb7376e6d6861e80bf39eaebfee2fd"},
-    {file = "bencode2-0.0.27-cp312-cp312-win_amd64.whl", hash = "sha256:45acf43f9775d598a4c43f1c432511b0c5e6f2ec2276e81a938f1932d038dd59"},
-    {file = "bencode2-0.0.27-cp38-cp38-macosx_10_16_x86_64.whl", hash = "sha256:c4b7b04153debfc536d749775f9c8cc35f8463188c3bb570467243ac9a3caaa4"},
-    {file = "bencode2-0.0.27-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:2933972dd5f9cd54e5a7819c82971036e312a5aef3d27830d2b2237e134ae2a1"},
-    {file = "bencode2-0.0.27-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:ed7f53771101cecdb1e82720ff412ebe4317088b1ee9035d6ff2ab28c884ea4c"},
-    {file = "bencode2-0.0.27-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:0964f8084ab1f045adaab0778cf691e02911d6af002116897976fef22aa2f82c"},
-    {file = "bencode2-0.0.27-cp38-cp38-musllinux_1_2_aarch64.whl", hash = "sha256:e1e5eda893dd81573693a551d8acf6daba39e5a5ca16179eb8b30cd6a444b3f1"},
-    {file = "bencode2-0.0.27-cp38-cp38-musllinux_1_2_x86_64.whl", hash = "sha256:2f1ec367b2a99b9fb8b362ce9a3038e84311e5fc4deded9e9a13c9795945e769"},
-    {file = "bencode2-0.0.27-cp38-cp38-win_amd64.whl", hash = "sha256:6d80fd702a48598bfda291062738e3881742d9e44890d07f5c95648ebbef7cb7"},
-    {file = "bencode2-0.0.27-cp39-cp39-macosx_10_16_x86_64.whl", hash = "sha256:bc6976959a301df9134d5b71723bffa3e58b7fc27c5692db136466430ed7d020"},
-    {file = "bencode2-0.0.27-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:0cfa284ac5a9ada183881300eaa590c0df6a888a0598856a8696eb912c0bc43b"},
-    {file = "bencode2-0.0.27-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:498d86e10a56f2f220cab72636336d9fd3fcf1f58d16ffc45dcaca139a488a3e"},
-    {file = "bencode2-0.0.27-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:8175216f34bbb65d519b695e603ffaf2e60a75b53521d2742bc0ec6b5596a879"},
-    {file = "bencode2-0.0.27-cp39-cp39-musllinux_1_2_aarch64.whl", hash = "sha256:0698fa68ac25fc50adf0f27dc9bf63ace4bc3adac6ffbc6b365c50e652953904"},
-    {file = "bencode2-0.0.27-cp39-cp39-musllinux_1_2_x86_64.whl", hash = "sha256:dbd8a7ba3896243fd5f054dfe48206a4c33e81048d8bb72b639129d97f748dff"},
-    {file = "bencode2-0.0.27-cp39-cp39-win_amd64.whl", hash = "sha256:23f16b94046397a5ad7dba6168350580fb53c0b30b6539e20b5f98762a9b270b"},
-    {file = "bencode2-0.0.27-py3-none-any.whl", hash = "sha256:5fd87e6e47f2a861f81c32223927dc3f17e9719ce9fb45b2fb511fd828675106"},
-    {file = "bencode2-0.0.27.tar.gz", hash = "sha256:f3ac5a66827f8a94d672bdc77a542300204cfeefc6e8ac0e26935c4121a5ef58"},
+    {file = "bencode2-0.1.0-cp310-cp310-macosx_10_16_x86_64.whl", hash = "sha256:339da5d8a7d8ab56f63ac70457f5c540dd024c1af0231822a320299b807e9884"},
+    {file = "bencode2-0.1.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:50ad43586cb72fd40ec93695d7a3b1087b75f6f45840d80eb1fb29558bfe3a9c"},
+    {file = "bencode2-0.1.0-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:d55f5122ea8a735f3708ebffbef227b5214b74239665bd1ccabde315ad52133d"},
+    {file = "bencode2-0.1.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:980841954fe5908bffdf0ea98c2c084ed808d0f798609eb56f0f9a4b231785a2"},
+    {file = "bencode2-0.1.0-cp310-cp310-musllinux_1_2_aarch64.whl", hash = "sha256:7f8ff9373d3db6d6008164532f48c45145a48afb70d55b485516ffaae21ba8c5"},
+    {file = "bencode2-0.1.0-cp310-cp310-musllinux_1_2_x86_64.whl", hash = "sha256:7343bfbb069cbfa4a57eda376dd674b92d84a42c626f0ac3b2586dc64d6564f8"},
+    {file = "bencode2-0.1.0-cp310-cp310-win_amd64.whl", hash = "sha256:a1e2a90f505f8336d9de16de42f2ada0af84b9583c59f7fd92f04051fd6b73bd"},
+    {file = "bencode2-0.1.0-cp311-cp311-macosx_10_16_x86_64.whl", hash = "sha256:f74ea3ae21c6033acdeb6bb50bc3a78e55160369e890dcab0b71c46e2262ecb6"},
+    {file = "bencode2-0.1.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:f065529e1122632dce5b0728da9f00509da64ff4c2a5823d6d9bf216a6a94bcf"},
+    {file = "bencode2-0.1.0-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:c830940cca12a76482525d724832ce16d31a5eb0774c7f0eabfe8ddecc39f254"},
+    {file = "bencode2-0.1.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:1bb5d693fb49e067c9a13ab8ecc2116aba99eac0d6bb217598191ad3ee82d4d6"},
+    {file = "bencode2-0.1.0-cp311-cp311-musllinux_1_2_aarch64.whl", hash = "sha256:e07f558f19669d1c6123467877b2286a801cc8503f2c42eb0178488e444476cd"},
+    {file = "bencode2-0.1.0-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:c9418ad2db8964150d51f54df79d6c7cb77d027be4244382a640136b46eac321"},
+    {file = "bencode2-0.1.0-cp311-cp311-win_amd64.whl", hash = "sha256:40d73fda35f6881136a33e506e1b8b31e329c485c02a4188e9d75bffabf98a61"},
+    {file = "bencode2-0.1.0-cp312-cp312-macosx_10_16_x86_64.whl", hash = "sha256:746b1796271ca6fca606ab159dfd54706f90e4d6b9a2c64b65f0d5dff26aac01"},
+    {file = "bencode2-0.1.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:0121794ddaf17320f2508e66dcf22765e24d2237a19447e644097494f78580df"},
+    {file = "bencode2-0.1.0-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:a466753e40ce7188419271098c6737eb42a03ed8ef6f16d937bb0c1fe378ba6b"},
+    {file = "bencode2-0.1.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:bd3df180f3fcf9209f9258770b66f4f1fe2fc4fc5887fdee304c09d7c922db8c"},
+    {file = "bencode2-0.1.0-cp312-cp312-musllinux_1_2_aarch64.whl", hash = "sha256:e79c634c9c43b84eba0ee8f481b49c5aa59ce79625752a6a70332fd2907feddb"},
+    {file = "bencode2-0.1.0-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:21c010d4b82a0534dc5f493e2a38653e899a4d89a9912c8b4130808bd1dd678d"},
+    {file = "bencode2-0.1.0-cp312-cp312-win_amd64.whl", hash = "sha256:79da9e9dd9316b04d2232794229dd889ee8524947578e54d90d14a7a383c0d55"},
+    {file = "bencode2-0.1.0-cp38-cp38-macosx_10_16_x86_64.whl", hash = "sha256:1c7892c346300acf901039febc32027f1ef94af15b75bab59bc3ee380c894b8b"},
+    {file = "bencode2-0.1.0-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:09d7e3fcee3c285b1824867c7389dd86514af773268db492bc7d3c31f338ba13"},
+    {file = "bencode2-0.1.0-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:90115525b0320746c2ca6ce5a2ec86995b477a085e8b27ab2bdfdb9718ae49e0"},
+    {file = "bencode2-0.1.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b0484776a1a733f756082b702b76789a39f45c366ec3d2b9d92012f043efb254"},
+    {file = "bencode2-0.1.0-cp38-cp38-musllinux_1_2_aarch64.whl", hash = "sha256:3adee1fdea653b39f75b416f3308e0b088978b4a143b4b3d8f5c273a4d6451d6"},
+    {file = "bencode2-0.1.0-cp38-cp38-musllinux_1_2_x86_64.whl", hash = "sha256:68561aca094b9476a378946be3f7bd9b19783082e498fd339d26349fd89112ec"},
+    {file = "bencode2-0.1.0-cp38-cp38-win_amd64.whl", hash = "sha256:4160c83972f3613ba6a0244bf54155f3807705de6816c21b82e0c0921115f193"},
+    {file = "bencode2-0.1.0-cp39-cp39-macosx_10_16_x86_64.whl", hash = "sha256:6a997fce0d8cc07a4fcc8a4b63d2d053efc12d26e5cf18ec36c075c9009ffaa1"},
+    {file = "bencode2-0.1.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:b3771dcd7a85d4cdb15b36fb7719b567274c02591c9bcdefad9c184239d973d5"},
+    {file = "bencode2-0.1.0-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:dda8ab034a65f66cc31dc88a666adc56273d267d88f483bd0b0d2ee48f54611e"},
+    {file = "bencode2-0.1.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:58e744c627d762a43ccde5fd763226e777cd1288112dfcca9db5b663adc32334"},
+    {file = "bencode2-0.1.0-cp39-cp39-musllinux_1_2_aarch64.whl", hash = "sha256:99480608ac7c478abebeed4abbaac09becbf67c1799e11e43384f3a0bbefbbfb"},
+    {file = "bencode2-0.1.0-cp39-cp39-musllinux_1_2_x86_64.whl", hash = "sha256:5e2acb5dd6aa22eb4b1ffb4aaf4f3e49a626a21ed38c31db1010a753d8298ceb"},
+    {file = "bencode2-0.1.0-cp39-cp39-win_amd64.whl", hash = "sha256:fffd4b38585b2754d49e7686e20dc42389811ef58c7ffbea8207ab284d53b194"},
+    {file = "bencode2-0.1.0-py3-none-any.whl", hash = "sha256:053571229f2c132ee6d08606916e4c5617fa9267b2ebe56a52a2be0d4f1d725c"},
+    {file = "bencode2-0.1.0.tar.gz", hash = "sha256:ada2f51af245a974a72b1fbb2c199f3c8dfc82792570a7eb9b27f8e4cd8b43b5"},
 ]
 
 [package.extras]
-mypy = ["mypy[mypyc] (==1.10.0)"]
+cython = ["cython", "setuptools"]
+mypy = ["mypy"]
 testing = ["pytest (==8.2.1)", "pytest-cov (==5.0.0)", "pytest-github-actions-annotate-failures (==0.2.0)"]
 
 [[package]]
