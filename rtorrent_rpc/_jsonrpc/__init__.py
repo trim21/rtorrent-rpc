@@ -7,9 +7,8 @@
 import json
 import threading
 from typing import Any
-from urllib.parse import urlparse
 
-from rtorrent_rpc._jsonrpc.transport import Transport, _HTTPTransport, _SCGITransport
+from rtorrent_rpc._jsonrpc.transport import Transport
 
 try:
     import orjson
@@ -63,15 +62,8 @@ class JSONRpc:
 
     __slots__ = ("_id", "_lock", "_transport")
 
-    def __init__(self, address: str):
-        url = urlparse(address)
-
-        if url.scheme == "scgi":
-            self._transport = _SCGITransport(address)
-        elif url.scheme in ("http", "https"):
-            self._transport = _HTTPTransport(address)
-        else:
-            raise ValueError(f"unsupported protocol {url.scheme}")
+    def __init__(self, t: Transport):
+        self._transport = t
 
         self._id = 0
         self._lock = threading.Lock()

@@ -12,7 +12,12 @@ import bencode2
 from typing_extensions import NotRequired, TypeAlias, TypedDict
 
 from rtorrent_rpc._jsonrpc import JSONRpc, JSONRpcError
-from rtorrent_rpc._jsonrpc.transport import BadStatusError
+from rtorrent_rpc._jsonrpc.transport import (
+    BadStatusError,
+    Transport,
+    _HTTPTransport,
+    _SCGITransport,
+)
 from rtorrent_rpc._transport import SsciXmlTransport
 
 __all__ = [
@@ -140,6 +145,11 @@ class RTorrent:
     a :class:`JSONRpc` instance to send rpc request with json-rpc.
     """
 
+    _transport: Transport
+    """
+    a low level internal :class:`Transport` can be used to send request directly.
+    """
+
     def __init__(self, address: str, rutorrent_compatibility: bool = True):
         """
         Args:
@@ -153,7 +163,14 @@ class RTorrent:
         else:
             self.rpc = xmlrpc.client.ServerProxy(address)
 
-        self.jsonrpc = JSONRpc(address=address)
+        if u.scheme == "scgi":
+            self._transport = _SCGITransport(address)
+        elif u.scheme in ("http", "https"):
+            self._transport = _HTTPTransport(address)
+        else:
+            raise ValueError(f"unsupported protocol {u.scheme}")
+
+        self.jsonrpc = JSONRpc(self._transport)
 
         self.rutorrent_compatibility: bool = rutorrent_compatibility
 
