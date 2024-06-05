@@ -21,7 +21,7 @@ jobs:
         with:
           python-version: '3.x'
 
-      - run: pipx -m build
+      - run: pipx build
 
       - run: pipx run twine upload dist/* --disable-progress-bar
         env:
