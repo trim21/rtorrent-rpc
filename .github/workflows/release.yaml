@@ -21,11 +21,12 @@ jobs:
         with:
           python-version: '3.x'
 
-      - uses: trim21/setup-poetry@dist/v2
+      - run: pipx -m build
 
-      - run: poetry publish --build
+      - run: pipx run twine upload dist/* --disable-progress-bar
         env:
-          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
+          TWINE_USERNAME: '__token__'
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
 
       - name: Generate Changelog
         id: changelog

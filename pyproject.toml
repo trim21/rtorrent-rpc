@@ -1,16 +1,16 @@
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling>=1.20.0"]
+build-backend = "hatchling.build"
 
-[tool.poetry]
+[project]
 name = "rtorrent-rpc"
-version = "0.7.2a0"
+version = "0.7.2a1"
 description = "Typed rtorrent rpc client"
-authors = ["Trim21 <i@trim21.me>"]
+authors = [
+    { name = "trim21", email = "trim21me@gmail.com" },
+]
 readme = 'readme.md'
-repository = 'https://github.com/trim21/rtorrent-rpc'
-license = 'MIT'
-packages = [{ include = 'rtorrent_rpc' }]
+license = { text = 'MIT' }
 keywords = ['rtorrent', 'rpc']
 classifiers = [
     'Intended Audience :: Developers',
@@ -19,37 +19,38 @@ classifiers = [
     'Programming Language :: Python :: 3 :: Only',
 ]
 
-[tool.poetry.dependencies]
-python = "^3.8"
-# dependencies
-typing-extensions = ">=4.7.1"
-bencode2 = ">=0.0.6,<1"
-urllib3 = { version = "^2.2.1" }
-certifi = ">=2017.4.17"
-orjson = { version = '>3.0.0,<4', optional = true }
+requires-python = ">=3.8,<4"
 
-[tool.poetry.extras]
-orjson = ['orjson']
+dependencies = [
+    'urllib3~=2.2',
+    'bencode2~=0.1',
+    'typing-extensions>=4.7.1',
+    'certifi>=2017.4.17',
+]
 
-[tool.poetry.group.docs.dependencies]
-sphinx = { version = "^7.0.0", python = "^3.9" }
-furo = { version = "^2024.0.0", python = "^3.9" }
+[project.optional-dependencies]
+orjson = [
+    'orjson~=3.0'
+]
 
-[tool.poetry.group.dev.dependencies]
-# tests
-pytest = "==8.2.1"
-pytest-github-actions-annotate-failures = "==0.2.0"
-coverage = "==7.5.3"
+docs = [
+    'sphinx~=7.0; python_version >= "3.9"',
+    'furo~=2024.0; python_version >= "3.9"',
+]
 
-# linter and formatter
-pre-commit = { version = "==3.7.1", markers = "implementation_name != 'pypy'", python = "^3.9" }
-#mypy = { version = "==1.4.1", markers = "implementation_name != 'pypy'", python = "^3.9" }
-sphinx-autobuild = { version = "2024.4.16", python = "^3.9" }
-mypy = { version = "1.10.0", python = "^3.9" }
-orjson = "3.10.3"
 
-[tool.poetry-plugin-bump]
-commit_msg = 'bump: v{version}'
+dev = [
+    "pytest==8.2.1",
+    "pytest-github-actions-annotate-failures==0.2.0",
+    "coverage==7.5.3",
+    'pre-commit==3.7.1; python_version >= "3.9"',
+    'sphinx-autobuild==2024.4.16; python_version >= "3.9"',
+    'mypy==1.10.0; python_version >= "3.9"',
+    'orjson~=3.0'
+]
+
+[project.urls]
+Homepage = "https://github.com/trim21/rtorrent-rpc"
 
 [tool.pytest.ini_options]
 addopts = '-rav -Werror'
