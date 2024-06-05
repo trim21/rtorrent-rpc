@@ -7,7 +7,7 @@ tasks:
   bump:
     vars:
       VERSION:
-        sh: poetry version -s
+        sh: yq '.project.version' pyproject.toml
     cmds:
       - git add pyproject.toml
       - 'git commit -m "bump: {{.VERSION}}"'

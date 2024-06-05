@@ -1,13 +1,12 @@
 default_stages: [commit]
 
 repos:
-  - repo: https://github.com/python-poetry/poetry
-    rev: "1.8.3"
+  - repo: https://github.com/abravalheri/validate-pyproject
+    rev: v0.18
     hooks:
-      - id: poetry-check
-      - id: poetry-lock
-        name: poetry-lock-check
-        args: ["--check"]
+      - id: validate-pyproject
+        # Optional extra validations from SchemaStore:
+        additional_dependencies: [ "validate-pyproject-schema-store[all]" ]
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.6.0
