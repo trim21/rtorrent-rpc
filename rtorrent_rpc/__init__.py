@@ -203,8 +203,6 @@ class RTorrent:
             content,
             'd.tied_to_file.set=""',
             f'd.directory_base.set="{directory_base}"',
-            # custom.addtime is used by ruTorrent and flood.
-            f"d.custom.set=addtime,{int(time.time())}",
         ]
 
         if tags:
@@ -213,6 +211,9 @@ class RTorrent:
             params.append(f'd.custom1.set="{_encode_tags(tags)}"')
 
         if self.rutorrent_compatibility:
+            # download add time
+            params.append(f"d.custom.set=addtime,{int(time.time())}")
+
             t = bencode2.bdecode(content)
             if b"comment" in t:
                 params.append(
