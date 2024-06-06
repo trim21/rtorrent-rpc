@@ -5,8 +5,10 @@ import urllib
 import urllib.parse
 import xmlrpc.client
 from collections.abc import Iterable
-from typing import Any, Literal, Protocol, cast
+from typing import Any, List, Literal, Protocol, Tuple, TypeVar, Union, cast
 from urllib.parse import quote
+from xmlrpc.client import dumps as xml_dumps
+from xmlrpc.client import loads as xml_loads
 
 import bencode2
 from typing_extensions import NotRequired, TypeAlias, TypedDict
@@ -30,10 +32,13 @@ __all__ = [
 
 Unknown: TypeAlias = Any
 
+T = TypeVar("T")
 
-class RutorrentCompatibilityDisabledError(Exception):
-    def __init__(self) -> None:
-        super().__init__("you need enable ruTorrent compatibility to use this feature")
+# this type alias exists because `str` match `Sequence[str]`
+Seq = Union[List[T], Tuple[T, ...]]
+
+
+class RutorrentCompatibilityDisabledError(Exception): ...
 
 
 class MultiCall(TypedDict):
@@ -177,6 +182,13 @@ class RTorrent:
 
         self.rutorrent_compatibility: bool = rutorrent_compatibility
 
+    def __xml_call(self, method_name: str, params: Any = ()) -> Any:
+        req = xml_dumps(params=tuple(params), methodname=method_name)
+
+        res = self._transport.request(req.encode(), content_type="text/xml")
+
+        return xml_loads(res.decode())[0][0]
+
     def get_session_path(self) -> str:
         """get current rtorrent session path"""
         return self.rpc.session.path()  # type: ignore
@@ -185,7 +197,8 @@ class RTorrent:
         self,
         content: bytes,
         directory_base: str,
-        tags: Iterable[str] | None = None,
+        tags: Seq[str] | None = None,
+        extras: Seq[str] = (),
     ) -> None:
         """
         Add a torrent to the client by providing the torrent file content as bytes.
@@ -200,28 +213,33 @@ class RTorrent:
             directory_base: The base directory where the downloaded files will be saved.
             tags: A sequence of tags associated with the torrent. Defaults to None.
                 This argument is compatible with ruTorrent and flood.
+            extras: extra commands to run for this download.
+                for example ``extra=['d.custom.set=my_special_key,...']``
         """
         params: list[str | bytes] = [
             "",
             content,
             'd.tied_to_file.set=""',
             f'd.directory_base.set="{directory_base}"',
+            *extras,
         ]
-
-        if tags:
-            if not self.rutorrent_compatibility:
-                raise RutorrentCompatibilityDisabledError
-            params.append(f'd.custom1.set="{_encode_tags(tags)}"')
 
         if self.rutorrent_compatibility:
             # download add time
             params.append(f"d.custom.set=addtime,{int(time.time())}")
+
+            if tags:
+                params.append(f'd.custom1.set="{_encode_tags(tags)}"')
 
             t = bencode2.bdecode(content)
             if b"comment" in t:
                 params.append(
                     f'd.custom2.set="VRS24mrker{quote(t[b"comment"].decode().strip())}"'
                 )
+        elif tags:
+            raise RutorrentCompatibilityDisabledError(
+                "need enable `rutorrent_compatibility` for tags support"
+            )
 
         self.rpc.load.raw_start_verbose(*params)  # type: ignore
 
@@ -342,6 +360,18 @@ class RTorrent:
     def d_add_tracker(self, info_hash: str, url: str, *, group: int = 0) -> None:
         """add a tracker to download"""
         self.rpc.d.tracker.insert(info_hash, group, url)
+
+    def d_get_choke_group_index(self, info_hash: str) -> None:
+        """get choke group for this download"""
+        return self.__xml_call("d.group", [info_hash])
+
+    def d_get_choke_group_name(self, info_hash: str) -> None:
+        """get choke group name for this download"""
+        return self.__xml_call("d.group.name", [info_hash])
+
+    def d_set_choke_group(self, info_hash: str, group: str | int) -> None:
+        """set choke group for this download"""
+        return self.__xml_call("d.group.set", [info_hash, str(group)])
 
     @property
     def t(self) -> _TrackerRpc:
