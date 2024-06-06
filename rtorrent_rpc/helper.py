@@ -67,7 +67,7 @@ def add_fast_resume_file(base_save_path: Path, torrent_content: bytes) -> bytes:
     """
 
     return __add_resume_file(
-        base_save_path, torrent_content, LibTorrentFilePriority.NORMAL
+        base_save_path, torrent_content, LibTorrentFilePriority.NORMAL.value
     )
 
 
@@ -78,7 +78,7 @@ def add_completed_resume_file(base_save_path: Path, torrent_content: bytes) -> b
         this may cause rtorrent into a invalid state and causing bugs, use at your own risk.
     """
     return __add_resume_file(
-        base_save_path, torrent_content, LibTorrentFilePriority.OFF
+        base_save_path, torrent_content, LibTorrentFilePriority.OFF.value
     )
 
 
