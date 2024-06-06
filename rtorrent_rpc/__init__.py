@@ -5,7 +5,7 @@ import urllib
 import urllib.parse
 import xmlrpc.client
 from collections.abc import Iterable
-from typing import Any, Literal, Protocol
+from typing import Any, Literal, Protocol, cast
 from urllib.parse import quote
 
 import bencode2
@@ -250,7 +250,7 @@ class RTorrent:
             ]
         )
 
-    def enable_super_seeding(self, info_hash: str):
+    def enable_super_seeding(self, info_hash: str) -> Any:
         """enable bep 16 super seeding mode for a download"""
         return self.system.multicall(
             [
@@ -265,7 +265,7 @@ class RTorrent:
             ]
         )
 
-    def disable_super_seeding(self, info_hash: str):
+    def disable_super_seeding(self, info_hash: str) -> Any:
         """disable bep 16 super seeding mode for a download"""
         return self.system.multicall(
             [
@@ -1131,8 +1131,6 @@ class _SCGIServerProxy(xmlrpc.client.ServerProxy):
         self,
         uri: str,
         transport: xmlrpc.client.Transport | None = None,
-        use_datetime: bool = False,
-        use_builtin_types: bool = False,
         **kwargs: Any,
     ):
         u = urllib.parse.urlparse(uri)
@@ -1140,16 +1138,9 @@ class _SCGIServerProxy(xmlrpc.client.ServerProxy):
         if u.scheme != "scgi":
             raise OSError("SCGIServerProxy Only Support XML-RPC over SCGI protocol")
 
-        if transport is None:
-            transport = SCGIXmlTransport(
-                use_datetime=use_datetime,
-                address=uri,
-                use_builtin_types=use_builtin_types,
-            )
-
         # Feed some junk in here, but we'll fix it afterwards
         super().__init__(
-            urllib.parse.urlunparse(u._replace(scheme="http")),
+            cast(str, urllib.parse.urlunparse(u._replace(scheme="http"))),
             transport=transport,
             **kwargs,
         )
