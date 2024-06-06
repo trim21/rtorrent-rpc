@@ -214,7 +214,7 @@ class RTorrent:
             tags: A sequence of tags associated with the torrent. Defaults to None.
                 This argument is compatible with ruTorrent and flood.
             extras: extra commands to run for this download.
-                for example ``extra=['d.custom.set=my_special_key,...']``
+                for example ``extras=["d.connection_seed.set=initial_seed"]``
         """
         params: list[str | bytes] = [
             "",
