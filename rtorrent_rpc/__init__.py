@@ -12,13 +12,13 @@ import bencode2
 from typing_extensions import NotRequired, TypeAlias, TypedDict
 
 from rtorrent_rpc._jsonrpc import JSONRpc, JSONRpcError
-from rtorrent_rpc._jsonrpc.transport import (
+from rtorrent_rpc._transport import (
     BadStatusError,
+    SCGIXmlTransport,
     Transport,
     _HTTPTransport,
     _SCGITransport,
 )
-from rtorrent_rpc._transport import SsciXmlTransport
 
 __all__ = [
     "RTorrent",
@@ -159,16 +159,19 @@ class RTorrent:
 
         u = urllib.parse.urlparse(address)
         if u.scheme == "scgi":
-            self.rpc = SCGIServerProxy(address)
-        else:
-            self.rpc = xmlrpc.client.ServerProxy(address)
-
-        if u.scheme == "scgi":
             self._transport = _SCGITransport(address)
         elif u.scheme in ("http", "https"):
             self._transport = _HTTPTransport(address)
         else:
             raise ValueError(f"unsupported protocol {u.scheme}")
+
+        xml_transport = SCGIXmlTransport(transport=self._transport)
+
+        if u.scheme == "scgi":
+            # xmlrpc.client.ServerProxy doesn't like scgi protocol
+            self.rpc = _SCGIServerProxy(address, xml_transport)
+        else:
+            self.rpc = xmlrpc.client.ServerProxy(address, xml_transport)
 
         self.jsonrpc = JSONRpc(self._transport)
 
@@ -1123,7 +1126,7 @@ _methods = [
 ]
 
 
-class SCGIServerProxy(xmlrpc.client.ServerProxy):
+class _SCGIServerProxy(xmlrpc.client.ServerProxy):
     def __init__(
         self,
         uri: str,
@@ -1138,7 +1141,7 @@ class SCGIServerProxy(xmlrpc.client.ServerProxy):
             raise OSError("SCGIServerProxy Only Support XML-RPC over SCGI protocol")
 
         if transport is None:
-            transport = SsciXmlTransport(
+            transport = SCGIXmlTransport(
                 use_datetime=use_datetime,
                 address=uri,
                 use_builtin_types=use_builtin_types,

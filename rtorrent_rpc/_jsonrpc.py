@@ -8,7 +8,7 @@ import json
 import threading
 from typing import Any
 
-from rtorrent_rpc._jsonrpc.transport import Transport
+from rtorrent_rpc._transport import Transport
 
 try:
     import orjson
@@ -62,8 +62,8 @@ class JSONRpc:
 
     __slots__ = ("_id", "_lock", "_transport")
 
-    def __init__(self, t: Transport):
-        self._transport = t
+    def __init__(self, transport: Transport):
+        self._transport = transport
 
         self._id = 0
         self._lock = threading.Lock()
