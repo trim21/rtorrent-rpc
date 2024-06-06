@@ -247,6 +247,35 @@ class RTorrent:
             ]
         )
 
+    def enable_super_seeding(self, info_hash: str):
+        """enable bep 16 super seeding mode for a download"""
+        return self.system.multicall(
+            [
+                MultiCall(methodName="d.stop", params=[info_hash]),
+                MultiCall(methodName="d.close", params=[info_hash]),
+                MultiCall(
+                    methodName="d.connection_seed.set",
+                    params=[info_hash, "initial_seed"],
+                ),
+                MultiCall(methodName="d.open", params=[info_hash]),
+                MultiCall(methodName="d.start", params=[info_hash]),
+            ]
+        )
+
+    def disable_super_seeding(self, info_hash: str):
+        """disable bep 16 super seeding mode for a download"""
+        return self.system.multicall(
+            [
+                MultiCall(methodName="d.stop", params=[info_hash]),
+                MultiCall(methodName="d.close", params=[info_hash]),
+                MultiCall(
+                    methodName="d.connection_seed.set", params=[info_hash, "seed"]
+                ),
+                MultiCall(methodName="d.open", params=[info_hash]),
+                MultiCall(methodName="d.start", params=[info_hash]),
+            ]
+        )
+
     def download_list(self) -> list[str]:
         """get list of info hash for current downloads"""
         return self.rpc.download_list()  # type: ignore
