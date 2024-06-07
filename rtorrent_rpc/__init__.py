@@ -191,7 +191,7 @@ class RTorrent:
         self,
         content: bytes,
         directory_base: str,
-        tags: Iterator[str] | None = None,
+        tags: Iterable[str] | None = None,
         extras: Iterable[str] = (),
     ) -> None:
         """
