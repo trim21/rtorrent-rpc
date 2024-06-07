@@ -5,7 +5,14 @@ import urllib
 import urllib.parse
 import xmlrpc.client
 from collections.abc import Iterable
-from typing import Any, List, Literal, Protocol, Tuple, TypeVar, Union, cast
+from typing import (
+    Any,
+    Iterator,
+    Literal,
+    Protocol,
+    TypeVar,
+    cast,
+)
 from urllib.parse import quote
 from xmlrpc.client import dumps as xml_dumps
 from xmlrpc.client import loads as xml_loads
@@ -34,9 +41,6 @@ Unknown: TypeAlias = Any
 
 T = TypeVar("T")
 
-# this type alias exists because `str` match `Sequence[str]`
-Seq = Union[List[T], Tuple[T, ...]]
-
 
 class RutorrentCompatibilityDisabledError(Exception): ...
 
@@ -44,16 +48,6 @@ class RutorrentCompatibilityDisabledError(Exception): ...
 class MultiCall(TypedDict):
     methodName: str
     params: NotRequired[Any]
-
-
-def _encode_tags(tags: Iterable[str] | None) -> str:
-    if not tags:
-        return ""
-
-    if isinstance(tags, str):
-        return quote(tags.strip())
-
-    return ",".join(quote(t) for t in sorted({x.strip() for x in tags}) if t)
 
 
 class _DirectoryRpc(Protocol):
@@ -197,8 +191,8 @@ class RTorrent:
         self,
         content: bytes,
         directory_base: str,
-        tags: Seq[str] | None = None,
-        extras: Seq[str] = (),
+        tags: Iterator[str] | None = None,
+        extras: Iterable[str] = (),
     ) -> None:
         """
         Add a torrent to the client by providing the torrent file content as bytes.
@@ -221,7 +215,7 @@ class RTorrent:
             content,
             'd.tied_to_file.set=""',
             f'd.directory_base.set="{directory_base}"',
-            *extras,
+            *_real_iterator_of_str(extras),
         ]
 
         if self.rutorrent_compatibility:
@@ -1174,3 +1168,20 @@ class _SCGIServerProxy(xmlrpc.client.ServerProxy):
             transport=transport,
             **kwargs,
         )
+
+
+def _real_iterator_of_str(s: Iterable[str]) -> Iterator[str]:
+    if isinstance(s, str):
+        yield s
+    else:
+        yield from s
+
+
+def _encode_tags(tags: Iterable[str] | None) -> str:
+    if not tags:
+        return ""
+
+    if isinstance(tags, str):
+        return quote(tags.strip())
+
+    return ",".join(quote(t) for t in sorted({x.strip() for x in tags}) if t)
