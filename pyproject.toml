@@ -4,7 +4,7 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "rtorrent-rpc"
-version = "0.7.2a12"
+version = "0.7.2a13"
 description = "Typed rtorrent rpc client"
 authors = [
     { name = "trim21", email = "trim21me@gmail.com" },
