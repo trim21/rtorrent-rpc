@@ -21,4 +21,4 @@ jobs:
       - run: pipx run flit build
 
       - name: Check Files
-        run: pipx run flit publish
+        run: pipx run twine check --strict dist/*
