@@ -21,8 +21,6 @@ jobs:
         with:
           python-version: '3.x'
 
-      - run: pipx run flit build
-
       - run: pipx run flit publish
         env:
           FLIT_USERNAME: '__token__'
