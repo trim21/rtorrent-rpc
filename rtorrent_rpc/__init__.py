@@ -47,7 +47,7 @@ class RutorrentCompatibilityDisabledError(Exception): ...
 
 if TYPE_CHECKING:
     # TypeAlias need 3.10, and deprecated since 3.12
-    from typing import TypeAlias
+    from typing_extensions import TypeAlias
 
     Unknown: TypeAlias = Any
 else:
@@ -56,7 +56,7 @@ else:
 
 if TYPE_CHECKING or sys.version_info >= (3, 11):
     # TypedDict need 3.11.
-    from typing import NotRequired, TypedDict
+    from typing_extensions import NotRequired, TypedDict
 
     class MultiCall(TypedDict):
         methodName: str
