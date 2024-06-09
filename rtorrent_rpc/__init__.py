@@ -45,7 +45,7 @@ T = TypeVar("T")
 class RutorrentCompatibilityDisabledError(Exception): ...
 
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     # TypeAlias need 3.10, and deprecated since 3.12
     from typing_extensions import TypeAlias
 
@@ -54,7 +54,7 @@ else:
     Unknown = Any
 
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
 
     # TypedDict need 3.11.
     from typing_extensions import NotRequired, TypedDict
