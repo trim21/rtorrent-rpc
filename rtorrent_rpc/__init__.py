@@ -46,35 +46,25 @@ class RutorrentCompatibilityDisabledError(Exception): ...
 
 
 if TYPE_CHECKING:
-    # TypedDict need 3.11.
     # TypeAlias need 3.10, and deprecated since 3.12
-    from typing_extensions import NotRequired, TypeAlias, TypedDict
+    from typing import TypeAlias
 
     Unknown: TypeAlias = Any
+else:
+    Unknown = Any
+
+
+if TYPE_CHECKING or sys.version_info >= (3, 11):
+    # TypedDict need 3.11.
+    from typing import NotRequired, TypedDict
 
     class MultiCall(TypedDict):
         methodName: str
         params: NotRequired[Any]
 
 else:
-    if sys.version_info >= (3, 10):
-        from typing import TypeAlias
-
-        Unknown: TypeAlias = Any
-    else:
-        # don't think this will make a difference
-        Unknown = Any
-
-    if sys.version_info >= (3, 11):
-        from typing import NotRequired, TypedDict
-
-        class MultiCall(TypedDict):
-            methodName: str
-            params: NotRequired[Any]
-
-    else:
-        # don't think this will make a difference
-        MultiCall = dict
+    # don't think this will make a difference
+    MultiCall = dict
 
 
 class _DirectoryRpc(Protocol):
