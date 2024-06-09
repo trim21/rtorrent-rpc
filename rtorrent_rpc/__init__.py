@@ -54,9 +54,19 @@ else:
     Unknown = Any
 
 
-if TYPE_CHECKING or sys.version_info >= (3, 11):
+if TYPE_CHECKING:
+
     # TypedDict need 3.11.
     from typing_extensions import NotRequired, TypedDict
+
+    class MultiCall(TypedDict):
+        methodName: str
+        params: NotRequired[Any]
+
+elif sys.version_info >= (3, 11):
+
+    # TypedDict need 3.11.
+    from typing import NotRequired, TypedDict
 
     class MultiCall(TypedDict):
         methodName: str
