@@ -1,13 +1,11 @@
 from __future__ import annotations
 
-import sys
 import time
 import urllib
 import urllib.parse
 import xmlrpc.client
 from collections.abc import Iterable
 from typing import (
-    TYPE_CHECKING,
     Any,
     Iterator,
     Literal,
@@ -20,6 +18,10 @@ from xmlrpc.client import dumps as xml_dumps
 from xmlrpc.client import loads as xml_loads
 
 import bencode2
+
+# TypeAlias need 3.10, and deprecated since 3.12
+# TypedDict need 3.11.
+from typing_extensions import NotRequired, TypeAlias, TypedDict
 
 from rtorrent_rpc._jsonrpc import JSONRpc, JSONRpcError
 from rtorrent_rpc._transport import (
@@ -45,36 +47,12 @@ T = TypeVar("T")
 class RutorrentCompatibilityDisabledError(Exception): ...
 
 
-if TYPE_CHECKING:  # pragma: no cover
-    # TypeAlias need 3.10, and deprecated since 3.12
-    from typing_extensions import TypeAlias
-
-    Unknown: TypeAlias = Any
-else:
-    Unknown = Any
+Unknown: TypeAlias = Any
 
 
-if TYPE_CHECKING:  # pragma: no cover
-
-    # TypedDict need 3.11.
-    from typing_extensions import NotRequired, TypedDict
-
-    class MultiCall(TypedDict):
-        methodName: str
-        params: NotRequired[Any]
-
-elif sys.version_info >= (3, 11):
-
-    # TypedDict need 3.11.
-    from typing import NotRequired, TypedDict
-
-    class MultiCall(TypedDict):
-        methodName: str
-        params: NotRequired[Any]
-
-else:
-    # don't think this will make a difference
-    MultiCall = dict
+class MultiCall(TypedDict):
+    methodName: str
+    params: NotRequired[Any]
 
 
 class _DirectoryRpc(Protocol):

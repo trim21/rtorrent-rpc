@@ -25,6 +25,7 @@ dependencies = [
     'urllib3~=2.2',
     'bencode2>=0.1.2,<1',
     'certifi>=2017.4.17',
+    'typing-extensions>=4.7.1',
 ]
 
 [project.optional-dependencies]
@@ -38,7 +39,6 @@ docs = [
 ]
 
 dev = [
-    'typing-extensions>=4.7.1',
     "pytest==8.2.2",
     "pytest-github-actions-annotate-failures==0.2.0",
     "coverage==7.5.3",
