@@ -214,6 +214,9 @@ class RTorrent:
         """get current rtorrent session path"""
         return self.rpc.session.path()  # type: ignore
 
+    def session_save(self) -> int:
+        return self.__xml_call("session.save")
+
     def add_torrent_by_file(
         self,
         content: bytes,
@@ -421,6 +424,55 @@ class RTorrent:
             rt.f.multicall("<info_hash>", "", "f.path=")
         """
         return self.rpc.f  # type: ignore
+
+    def list_choke_groups(self) -> list[str]:
+        return self.__xml_call("choke_group.list", [""])
+
+    def get_choke_group(self, name_or_index: str | int, /) -> int:
+        return self.__xml_call("choke_group.index_of", ["", str(name_or_index)])
+
+    def get_choke_group_size(self, name_or_index: str | int, /) -> int:
+        return self.__xml_call("choke_group.general.size", ["", str(name_or_index)])
+
+    def get_choke_group_tracker_mode(self, name_or_index: str | int, /) -> str:
+        return self.__xml_call("choke_group.tracker.mode", ["", str(name_or_index)])
+
+    def set_choke_group_tracker_mode(
+        self, name_or_index: str | int, mode: str, /
+    ) -> int:
+        return self.__xml_call(
+            "choke_group.tracker.mode.set", ["", str(name_or_index), mode]
+        )
+
+    def set_choke_group_max_upload(
+        self, name_or_index: str | int, speed: int, /
+    ) -> Unknown:
+        return self.__xml_call(
+            "choke_group.up.max.set", ["", str(name_or_index), str(speed)]
+        )
+
+    def set_choke_group_max_download(
+        self, name_or_index: str | int, speed: int, /
+    ) -> Unknown:
+        return self.__xml_call(
+            "choke_group.down.max.set", ["", str(name_or_index), str(speed)]
+        )
+
+    def set_choke_group_update_heuristics(
+        self, name_or_index: str | int, mode: str, /
+    ) -> Unknown:
+        """you can get available modes from `call("strings.choke_heuristics.upload", [""])`"""
+        return self.__xml_call(
+            "choke_group.up.heuristics.set", ["", str(name_or_index), mode]
+        )
+
+    def set_choke_group_download_heuristics(
+        self, name_or_index: str | int, mode: str, /
+    ) -> Unknown:
+        """you can get available modes from `call("strings.choke_heuristics.download", [""])`"""
+        return self.__xml_call(
+            "choke_group.download.heuristics.set", ["", str(name_or_index), mode]
+        )
 
 
 _methods = [
