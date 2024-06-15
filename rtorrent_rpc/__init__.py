@@ -409,8 +409,8 @@ class RTorrent:
     def get_choke_group(self, name_or_index: str | int, /) -> int:
         return self.__xml_call("choke_group.index_of", ["", str(name_or_index)])
 
-    def get_choke_group_size(self, name_or_index: str | int, /) -> int:
-        return self.__xml_call("choke_group.general.size", ["", str(name_or_index)])
+    def get_choke_group_size(self, name: str, /) -> int:
+        return self.__xml_call("choke_group.general.size", ["", name])
 
     def get_choke_group_tracker_mode(self, name_or_index: str | int, /) -> str:
         return self.__xml_call("choke_group.tracker.mode", ["", str(name_or_index)])
@@ -423,17 +423,19 @@ class RTorrent:
         )
 
     def set_choke_group_max_upload(
-        self, name_or_index: str | int, speed: int, /
+        self, name_or_index: str | int, slots: int, /
     ) -> Unknown:
+        """set max upload slots"""
         return self.__xml_call(
-            "choke_group.up.max.set", ["", str(name_or_index), str(speed)]
+            "choke_group.up.max.set", ["", str(name_or_index), str(slots)]
         )
 
     def set_choke_group_max_download(
-        self, name_or_index: str | int, speed: int, /
+        self, name_or_index: str | int, slots: int, /
     ) -> Unknown:
+        """set max upload slots."""
         return self.__xml_call(
-            "choke_group.down.max.set", ["", str(name_or_index), str(speed)]
+            "choke_group.down.max.set", ["", str(name_or_index), str(slots)]
         )
 
     def set_choke_group_update_heuristics(

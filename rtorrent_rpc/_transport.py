@@ -26,7 +26,7 @@ class BadStatusError(Exception):
     body: bytes
 
     def __init__(self, status: int, body: bytes):
-        super().__init__(f"unexpected response status code {status}")
+        super().__init__(f"unexpected response status code {status} {body}")
         self.status = status
         self.body = body
 
@@ -110,17 +110,18 @@ class _HTTPTransport(Transport):
         if content_type:
             headers["content-type"] = content_type
 
-        with self._pool.urlopen(
+        res = self._pool.request(
             method="POST",
             url=self.address,
             body=body,
             redirect=False,
             headers=headers,
-        ) as res:
-            res_body = res.read()
-            if res.status not in (200, 204):
-                raise BadStatusError(res.status, res_body)
-            return res_body
+        )
+
+        res_body = res.data
+        if res.status not in (200, 204):
+            raise BadStatusError(res.status, res_body)
+        return res_body
 
 
 class SCGIXmlTransport(xmlrpc.client.Transport):
