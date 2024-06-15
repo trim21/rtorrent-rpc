@@ -7,6 +7,10 @@ __all__ = ["encode_request", "parse_response"]
 NULL = b"\x00"
 
 
+class ProtocolError(Exception):
+    pass
+
+
 def encode_request(body: bytes, content_type: str | None = None) -> Iterator[bytes]:
     length = len(body)
 
@@ -32,6 +36,15 @@ def parse_response(res: bytes) -> tuple[dict[str, str], bytes]:
     Args:
         res: should be full response bytes, including headers and body
     """
+    if res.startswith(b"HTTP/"):
+        line = res.splitlines()[0]
+        raise ProtocolError(
+            "you are using HTTP protocol, please change url scheme to http instead.\n"
+            "response:\n"
+            f"  {line!r}\n"
+            "..."
+        )
+
     raw_header, _, body = res.partition(b"\r\n\r\n")
     h = __parse_raw_headers(raw_header)
     assert int(h["content-length"].encode()) == len(body)
