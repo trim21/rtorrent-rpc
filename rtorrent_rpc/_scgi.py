@@ -39,7 +39,7 @@ def parse_response(res: bytes) -> tuple[dict[str, str], bytes]:
     if res.startswith(b"HTTP/"):
         line = res.splitlines(keepends=True)[0]
         raise ProtocolError(
-            "you are using HTTP protocol, please change url scheme to http instead.\n"
+            "HTTP protocol found, please change url scheme to http instead.\n"
             "response data:\n"
             f"   {line!r}\n"
             "    ..."
