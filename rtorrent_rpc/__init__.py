@@ -454,6 +454,10 @@ class RTorrent:
             "choke_group.download.heuristics.set", ["", str(name_or_index), mode]
         )
 
+    def set_upload_speed_limit(self, name: str, speed: int, /) -> Unknown:
+        # Don't know why they define rpc method like this
+        return self.__xml_call("throttle.up", ["", [name, int(speed)]])
+
 
 _methods = [
     "system.methodExist",
