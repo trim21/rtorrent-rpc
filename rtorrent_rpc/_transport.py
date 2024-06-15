@@ -26,7 +26,7 @@ class BadStatusError(Exception):
     body: bytes
 
     def __init__(self, status: int, body: bytes):
-        super().__init__(f"unexpected response status code {status} {body}")
+        super().__init__(f"unexpected response status code {status} {body!r}")
         self.status = status
         self.body = body
 
