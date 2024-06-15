@@ -37,12 +37,12 @@ def parse_response(res: bytes) -> tuple[dict[str, str], bytes]:
         res: should be full response bytes, including headers and body
     """
     if res.startswith(b"HTTP/"):
-        line = res.splitlines()[0]
+        line = res.splitlines(keepends=True)[0]
         raise ProtocolError(
             "you are using HTTP protocol, please change url scheme to http instead.\n"
-            "response:\n"
-            f"  {line!r}\n"
-            "..."
+            "response data:\n"
+            f"   {line!r}\n"
+            "    ..."
         )
 
     raw_header, _, body = res.partition(b"\r\n\r\n")
