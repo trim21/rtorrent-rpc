@@ -4,7 +4,7 @@ tasks:
   docs:
     cmd: sphinx-autobuild docs/ docs/_build/ --watch rtorrent_rpc --port 8920
 
-  micro:
+  patch:
     cmds:
       - pyproject-bump micro
       - task: bump

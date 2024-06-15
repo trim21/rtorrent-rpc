@@ -42,8 +42,10 @@ class JSONRpcError(Exception):
     id: int
 
     def __init__(self, code: int, message: str, data: Any, id: int):
-        super().__init__(code, message)
-
+        if data:
+            super().__init__(code, message, data)
+        else:
+            super().__init__(code, message)
         self.code = code
         self.message = message
         self.data = data
