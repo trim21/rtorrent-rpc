@@ -81,8 +81,11 @@ class _SCGITransport(Transport):
             return sock
 
         # tcp
-        # we don't need to support scgi over tls, so just omit
-        return socket.create_connection((self.__host, self.__port))
+        if self.__timeout is None:
+            return socket.create_connection((self.__host, self.__port))
+        return socket.create_connection(
+            (self.__host, self.__port), timeout=self.__timeout
+        )
 
 
 class _HTTPTransport(Transport):
