@@ -159,7 +159,7 @@ class RTorrent:
         self,
         address: str,
         rutorrent_compatibility: bool = True,
-        timeout: float | None = 5,
+        timeout: float | None = 5.0,
     ):
         """
         Args:
@@ -169,6 +169,8 @@ class RTorrent:
         u = urllib.parse.urlparse(address)
         if u.scheme == "scgi":
             if u.hostname:
+                if not u.port:
+                    raise ValueError("port is required for scgi protocol")
                 self._transport = _SCGITcpTransport(u.hostname, u.port, timeout=timeout)
             else:
                 self._transport = _SCGIUnixTransport(u.path, timeout=timeout)
