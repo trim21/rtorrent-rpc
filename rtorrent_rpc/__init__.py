@@ -159,7 +159,7 @@ class RTorrent:
         self,
         address: str,
         rutorrent_compatibility: bool = True,
-        timeout: float | None = None,
+        timeout: float | None = 5,
     ):
         """
         Args:
