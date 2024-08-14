@@ -29,7 +29,8 @@ from rtorrent_rpc._transport import (
     SCGIXmlTransport,
     Transport,
     _HTTPTransport,
-    _SCGITransport,
+    _SCGITcpTransport,
+    _SCGIUnixTransport,
 )
 
 __all__ = [
@@ -167,7 +168,10 @@ class RTorrent:
         """
         u = urllib.parse.urlparse(address)
         if u.scheme == "scgi":
-            self._transport = _SCGITransport(address, timeout=timeout)
+            if u.hostname:
+                self._transport = _SCGITcpTransport(u.hostname, u.port, timeout=timeout)
+            else:
+                self._transport = _SCGIUnixTransport(u.path, timeout=timeout)
         elif u.scheme in ("http", "https"):
             self._transport = _HTTPTransport(address, timeout=timeout)
         else:

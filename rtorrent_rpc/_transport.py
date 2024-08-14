@@ -32,28 +32,8 @@ class BadStatusError(Exception):
 
 
 class _SCGITransport(Transport):
-    __host: str
-    __port: int
-
-    __path: str | None
-
-    __timeout: float | None
-
-    __slots__ = ("__host", "__path", "__port", "__timeout")
-
-    def __init__(self, address: str, timeout: float | None) -> None:
-        u = urlparse(address)
-        self.__timeout = timeout
-        self.__path = None
-        if u.hostname:
-            # tcp
-            assert u.port
-            self.__host = u.hostname
-            assert u.port, "scgi over tcp must have a port number"
-            self.__port = u.port
-        else:
-            # unix domain
-            self.__path = u.path
+    def __connect(self) -> socket.socket:
+        raise NotImplementedError
 
     def request(self, body: bytes, content_type: str | None = None) -> bytes:
         with self.__connect() as conn:
@@ -72,17 +52,36 @@ class _SCGITransport(Transport):
 
         return res_body
 
-    def __connect(self) -> socket.socket:
-        if self.__path:
-            # unix domain socket
-            sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-            sock.connect(self.__path)
-            sock.settimeout(self.__timeout)
-            return sock
 
-        # tcp
-        if self.__timeout is None:
-            return socket.create_connection((self.__host, self.__port))
+class _SCGIUnixTransport(_SCGITransport):
+    __path: str
+    __timeout: float | None
+
+    __slots__ = ("__path", "__timeout")
+
+    def __init__(self, path: str, timeout: float | None) -> None:
+        self.__path = path
+
+    def __connect(self) -> socket.socket:
+        sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        sock.connect(self.__path)
+        sock.settimeout(self.__timeout)
+        return sock
+
+
+class _SCGITcpTransport(_SCGITransport):
+    __host: str
+    __port: int
+    __timeout: float | None
+
+    __slots__ = ("__host", "__path", "__timeout")
+
+    def __init__(self, host: str, port: int, timeout: float | None) -> None:
+        self.__host = host
+        self.__port = port
+        self.__timeout = timeout
+
+    def __connect(self) -> socket.socket:
         return socket.create_connection(
             (self.__host, self.__port), timeout=self.__timeout
         )
