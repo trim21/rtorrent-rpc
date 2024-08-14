@@ -37,10 +37,13 @@ class _SCGITransport(Transport):
 
     __path: str | None
 
-    __slots__ = ("__host", "__port", "__path")
+    __timeout: float | None
 
-    def __init__(self, address: str) -> None:
+    __slots__ = ("__host", "__path", "__port", "__timeout")
+
+    def __init__(self, address: str, timeout: float | None) -> None:
         u = urlparse(address)
+        self.__timeout = timeout
         self.__path = None
         if u.hostname:
             # tcp
@@ -74,6 +77,7 @@ class _SCGITransport(Transport):
             # unix domain socket
             sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
             sock.connect(self.__path)
+            sock.settimeout(self.__timeout)
             return sock
 
         # tcp
@@ -84,7 +88,7 @@ class _SCGITransport(Transport):
 class _HTTPTransport(Transport):
     _pool: HTTPConnectionPool
 
-    def __init__(self, address: str) -> None:
+    def __init__(self, address: str, timeout: float | None) -> None:
         self.address = address
         u = urlparse(address)
         assert u.hostname
@@ -93,16 +97,17 @@ class _HTTPTransport(Transport):
         self.u = u
 
         if self.u.scheme == "http":
-            self._pool = HTTPConnectionPool(self.host, self.port)
+            self._pool = HTTPConnectionPool(self.host, self.port, timeout=timeout)
         elif self.u.scheme == "https":
             if os.environ.get(_VALIDATE_ENV_KEY) == "1":
-                self._pool = HTTPSConnectionPool(self.host, self.port)
+                self._pool = HTTPSConnectionPool(self.host, self.port, timeout=timeout)
             else:
                 self._pool = HTTPSConnectionPool(
                     self.host,
                     self.port,
                     ca_certs=certifi.where(),
                     cert_reqs=ssl.CERT_REQUIRED,
+                    timeout=timeout,
                 )
 
     def request(self, body: bytes, content_type: str | None = None) -> bytes:

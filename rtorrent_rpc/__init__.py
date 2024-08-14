@@ -154,18 +154,22 @@ class RTorrent:
     a low level internal :class:`Transport` can be used to send request directly.
     """
 
-    def __init__(self, address: str, rutorrent_compatibility: bool = True):
+    def __init__(
+        self,
+        address: str,
+        rutorrent_compatibility: bool = True,
+        timeout: float | None = None,
+    ):
         """
         Args:
             address: rtorrent rpc address
             rutorrent_compatibility: compatibility for ruTorrent or flood.
         """
-
         u = urllib.parse.urlparse(address)
         if u.scheme == "scgi":
-            self._transport = _SCGITransport(address)
+            self._transport = _SCGITransport(address, timeout=timeout)
         elif u.scheme in ("http", "https"):
-            self._transport = _HTTPTransport(address)
+            self._transport = _HTTPTransport(address, timeout=timeout)
         else:
             raise ValueError(f"unsupported protocol {u.scheme}")
 
