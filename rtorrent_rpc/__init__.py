@@ -165,6 +165,7 @@ class RTorrent:
         Args:
             address: rtorrent rpc address
             rutorrent_compatibility: compatibility for ruTorrent or flood.
+            timeout: socket timeout. RTorrent may hang infinitely, without timeout.
         """
         u = urllib.parse.urlparse(address)
         if u.scheme == "scgi":
