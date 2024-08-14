@@ -32,11 +32,11 @@ class BadStatusError(Exception):
 
 
 class _SCGITransport(Transport):
-    def __connect(self) -> socket.socket:
+    def _connect(self) -> socket.socket:
         raise NotImplementedError
 
     def request(self, body: bytes, content_type: str | None = None) -> bytes:
-        with self.__connect() as conn:
+        with self._connect() as conn:
             for chunk in scgi.encode_request(body, content_type):
                 conn.send(chunk)
 
@@ -62,7 +62,7 @@ class _SCGIUnixTransport(_SCGITransport):
     def __init__(self, path: str, timeout: float | None) -> None:
         self.__path = path
 
-    def __connect(self) -> socket.socket:
+    def _connect(self) -> socket.socket:
         sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         sock.connect(self.__path)
         sock.settimeout(self.__timeout)
@@ -81,7 +81,7 @@ class _SCGITcpTransport(_SCGITransport):
         self.__port = port
         self.__timeout = timeout
 
-    def __connect(self) -> socket.socket:
+    def _connect(self) -> socket.socket:
         return socket.create_connection(
             (self.__host, self.__port), timeout=self.__timeout
         )
