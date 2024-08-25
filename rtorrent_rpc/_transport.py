@@ -61,6 +61,7 @@ class _SCGIUnixTransport(_SCGITransport):
 
     def __init__(self, path: str, timeout: float | None) -> None:
         self.__path = path
+        self.__timeout = timeout
 
     def _connect(self) -> socket.socket:
         sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
