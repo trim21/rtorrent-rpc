@@ -43,7 +43,7 @@ dev = [
     "pytest-github-actions-annotate-failures==0.2.0",
     "coverage==7.6.1",
     'pre-commit==3.8.0; python_version >= "3.9"',
-    'sphinx-autobuild==2024.4.16; python_version >= "3.9"',
+    'sphinx-autobuild==2024.9.3; python_version >= "3.9"',
     'mypy==1.11.2; python_version >= "3.9"',
 ]
 
