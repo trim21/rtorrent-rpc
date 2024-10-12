@@ -23,7 +23,7 @@ requires-python = "~=3.8"
 
 dependencies = [
     'urllib3~=2.2',
-    'bencode2>=0.1.2,<1',
+    'bencode2>=0.3.0,<1',
     'certifi>=2017.4.17',
     'typing-extensions>=4.7.1',
 ]
