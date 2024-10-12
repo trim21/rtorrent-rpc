@@ -93,7 +93,7 @@ def __add_resume_file(
     data: dict[bytes, Any] = bencode2.bdecode(torrent_content)
 
     piece_length = data[b"info"][b"piece length"]
-    files: list[dict[str, Any]] = []
+    files: list[dict[bytes, Any]] = []
 
     t_files = data[b"info"].get(b"files")
 
@@ -103,22 +103,22 @@ def __add_resume_file(
             file_path = base_save_path.joinpath(*[p.decode() for p in file[b"path"]])
             if not file_path.exists():
                 files.append(
-                    {"complete": 0, "mtime": 0, "priority": un_complete_file_prop}
+                    {b"complete": 0, b"mtime": 0, b"priority": un_complete_file_prop}
                 )
                 continue
 
             stat = file_path.lstat()
-            if stat.st_size != file["length"]:
+            if stat.st_size != file[b"length"]:
                 files.append(
-                    {"complete": 0, "mtime": 0, "priority": un_complete_file_prop}
+                    {b"complete": 0, b"mtime": 0, b"priority": un_complete_file_prop}
                 )
                 continue
 
             files.append(
                 {
-                    "complete": int(file["length"] / piece_length),
-                    "mtime": int(stat.st_mtime),
-                    "priority": 1,
+                    b"complete": int(file[b"length"] / piece_length),
+                    b"mtime": int(stat.st_mtime),
+                    b"priority": 1,
                 }
             )
     else:
@@ -129,7 +129,7 @@ def __add_resume_file(
 
         if stat.st_size == data[b"info"][b"length"]:
             files.append(
-                {"complete": piece_count, "mtime": int(stat.st_mtime), "priority": 1}
+                {b"complete": piece_count, b"mtime": int(stat.st_mtime), b"priority": 1}
             )
         else:
             return torrent_content
@@ -137,6 +137,6 @@ def __add_resume_file(
     data[b"rtorrent"] = None
     del data[b"rtorrent"]
 
-    data[b"libtorrent_resume"] = {"bitfield": piece_count, "files": files}
+    data[b"libtorrent_resume"] = {b"bitfield": piece_count, b"files": files}
 
     return bencode2.bencode(data)
