@@ -7,6 +7,7 @@ repos:
       - id: validate-pyproject
         # Optional extra validations from SchemaStore:
         additional_dependencies: [ "validate-pyproject-schema-store[all]" ]
+        args: [--disable, ruff]
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
