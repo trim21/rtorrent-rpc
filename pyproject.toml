@@ -41,7 +41,7 @@ docs = [
 dev = [
     "pytest==8.3.4",
     "pytest-github-actions-annotate-failures==0.2.0",
-    "coverage==7.6.8",
+    "coverage==7.6.9",
     'pre-commit==4.0.1; python_version >= "3.9"',
     'sphinx-autobuild==2024.10.3; python_version >= "3.9"',
     'mypy==1.14.0; python_version >= "3.9"',
