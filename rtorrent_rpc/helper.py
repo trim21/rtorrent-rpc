@@ -13,8 +13,8 @@ __all__ = [
     "add_completed_resume_file",
     "add_fast_resume_file",
     "get_torrent_info_hash",
-    "parse_tags",
     "parse_comment",
+    "parse_tags",
 ]
 
 

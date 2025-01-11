@@ -34,11 +34,11 @@ from rtorrent_rpc._transport import (
 )
 
 __all__ = [
-    "RTorrent",
-    "MultiCall",
-    "RutorrentCompatibilityDisabledError",
     "BadStatusError",
     "JSONRpcError",
+    "MultiCall",
+    "RTorrent",
+    "RutorrentCompatibilityDisabledError",
 ]
 
 

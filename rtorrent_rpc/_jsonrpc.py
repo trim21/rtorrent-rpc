@@ -32,7 +32,7 @@ else:
         return orjson.dumps(o)
 
 
-__all__ = ["JSONRpcError", "JSONRpc"]
+__all__ = ["JSONRpc", "JSONRpcError"]
 
 
 class JSONRpcError(Exception):
