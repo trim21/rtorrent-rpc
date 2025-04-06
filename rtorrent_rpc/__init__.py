@@ -1238,7 +1238,7 @@ class _SCGIServerProxy(xmlrpc.client.ServerProxy):
 
         # Feed some junk in here, but we'll fix it afterwards
         super().__init__(
-            cast(str, urllib.parse.urlunparse(u._replace(scheme="http"))),
+            cast("str", urllib.parse.urlunparse(u._replace(scheme="http"))),
             transport=transport,
             **kwargs,
         )
