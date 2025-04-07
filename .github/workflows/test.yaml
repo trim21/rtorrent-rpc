@@ -16,8 +16,8 @@ jobs:
       matrix:
         python: ["3.9", "3.10", "3.11", "3.12", '3.13']
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      - uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55 # v5
         with:
           python-version: ${{ matrix.python }}
           cache: pip
@@ -27,7 +27,7 @@ jobs:
       - name: run tests
         run: coverage run -a -m pytest tests
 
-      - uses: codecov/codecov-action@v5
+      - uses: codecov/codecov-action@0565863a31f2c772f9f0395002a31e3f06189574 # v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # required
 
@@ -39,11 +39,11 @@ jobs:
         python: ["3.9", "3.10", "3.11", "3.12", '3.13']
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - run: docker compose up -d
         working-directory: ./e2e/fixtures
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55 # v5
         with:
           python-version: ${{ matrix.python }}
           cache: pip
@@ -62,6 +62,6 @@ jobs:
       - name: run tests
         run: coverage run -a -m pytest e2e
 
-      - uses: codecov/codecov-action@v5
+      - uses: codecov/codecov-action@0565863a31f2c772f9f0395002a31e3f06189574 # v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # required
