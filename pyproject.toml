@@ -44,7 +44,7 @@ dev = [
     "coverage==7.9.2",
     'pre-commit==4.2.0; python_version >= "3.9"',
     'sphinx-autobuild==2024.10.3; python_version >= "3.9"',
-    'mypy==1.16.1; python_version >= "3.9"',
+    'mypy==1.17.1; python_version >= "3.9"',
 ]
 
 [project.urls]
