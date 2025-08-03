@@ -35,7 +35,7 @@ orjson = [
 
 docs = [
     'sphinx~=8.0; python_version >= "3.9"',
-    'furo~=2024.0; python_version >= "3.9"',
+    'furo~=2025.7; python_version >= "3.9"',
 ]
 
 dev = [
