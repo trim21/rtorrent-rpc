@@ -48,7 +48,7 @@ class _SCGITransport(Transport):
                 else:
                     break
 
-        res_header, res_body = scgi.parse_response(b"".join(chunks))
+        _res_header, res_body = scgi.parse_response(b"".join(chunks))
 
         return res_body
 
