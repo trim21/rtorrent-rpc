@@ -25,8 +25,6 @@ repos:
         args: [--fix=lf]
       - id: end-of-file-fixer
       - id: fix-byte-order-marker
-      - id: fix-encoding-pragma
-        args: [--remove]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.14.0
