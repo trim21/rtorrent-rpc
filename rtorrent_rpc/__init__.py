@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import time
 import urllib
 import urllib.parse
@@ -40,7 +41,6 @@ __all__ = [
     "RTorrent",
     "RutorrentCompatibilityDisabledError",
 ]
-
 
 T = TypeVar("T")
 
@@ -212,6 +212,7 @@ class RTorrent:
         directory_base: str,
         tags: Iterable[str] | None = None,
         extras: Iterable[str] = (),
+        custom: dict[str, str] | None = None,
     ) -> None:
         """
         Add a torrent to the client by providing the torrent file content as bytes.
@@ -228,6 +229,7 @@ class RTorrent:
                 This argument is compatible with ruTorrent and flood.
             extras: extra commands to run for this download.
                 for example ``extras=["d.connection_seed.set=initial_seed"]``
+            custom: extra custom values
         """
         params: list[str | bytes] = [
             "",
@@ -237,9 +239,11 @@ class RTorrent:
             *_real_iterator_of_str(extras),
         ]
 
+        extra_custom: dict[str, Any] = custom or {}
+
         if self.rutorrent_compatibility:
             # download add time
-            params.append(f"d.custom.set=addtime,{int(time.time())}")
+            extra_custom["addtime"] = int(time.time())
 
             if tags:
                 params.append(f'd.custom1.set="{_encode_tags(tags)}"')
@@ -253,6 +257,9 @@ class RTorrent:
             raise RutorrentCompatibilityDisabledError(
                 "need enable `rutorrent_compatibility` for tags support"
             )
+
+        for key, value in extra_custom.items():
+            params.append(f"d.custom.set={key},{json.dumps(value)}")
 
         self.rpc.load.raw_start_verbose(*params)  # type: ignore
 
