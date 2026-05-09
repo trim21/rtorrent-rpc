@@ -38,7 +38,7 @@ class _SCGITransport(Transport):
     def request(self, body: bytes, content_type: str | None = None) -> bytes:
         with self._connect() as conn:
             for chunk in scgi.encode_request(body, content_type):
-                conn.send(chunk)
+                conn.sendall(chunk)
 
             chunks = []
             while True:
@@ -47,6 +47,8 @@ class _SCGITransport(Transport):
                     chunks.append(chunk)
                 else:
                     break
+
+            print(repr(chunks))
 
         _res_header, res_body = scgi.parse_response(b"".join(chunks))
 
