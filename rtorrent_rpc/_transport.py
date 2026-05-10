@@ -14,7 +14,7 @@ from rtorrent_rpc import _scgi as scgi
 
 
 class Transport(Protocol):
-    def request(self, data: bytes, content_type: str | None = None) -> bytes:
+    def request(self, body: bytes, content_type: str | None = None) -> bytes:
         """encode request data and return response body"""
 
 
@@ -94,10 +94,10 @@ class _HTTPTransport(Transport):
     def __init__(self, address: str, timeout: float | None) -> None:
         self.address = address
         u = urlparse(address)
-        assert u.hostname
         self.host = u.hostname
         self.port = u.port
         self.u = u
+        assert self.host, "address missing host"
 
         if self.u.scheme == "http":
             self._pool = HTTPConnectionPool(self.host, self.port, timeout=timeout)
