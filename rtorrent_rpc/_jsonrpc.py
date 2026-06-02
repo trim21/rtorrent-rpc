@@ -4,32 +4,26 @@
 !! This is not a general propose json-rpc client.
 """
 
+import base64
 import json
 import threading
 from typing import Any
 
 from rtorrent_rpc._transport import Transport
 
-try:
-    import orjson
-except ImportError:
-    orjson = None  # type: ignore[assignment]
 
-if orjson is None:
+def _bytes_default(obj: Any) -> str:
+    if isinstance(obj, bytes):
+        return f"data:;base64,{base64.b64encode(obj).decode('ascii')}"
+    raise TypeError(f"Object of type {type(obj).__name__} is not JSON serializable")
 
-    def _decode_json(o: bytes) -> Any:
-        return json.loads(o)
 
-    def _encode_json(o: Any) -> bytes:
-        return json.dumps(o).encode()
+def _decode_json(o: bytes) -> Any:
+    return json.loads(o)
 
-else:
 
-    def _decode_json(o: bytes) -> Any:
-        return orjson.loads(o)
-
-    def _encode_json(o: Any) -> bytes:
-        return orjson.dumps(o)
+def _encode_json(o: Any) -> bytes:
+    return json.dumps(o, default=_bytes_default).encode()
 
 
 __all__ = ["JSONRpc", "JSONRpcError"]

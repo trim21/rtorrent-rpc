@@ -29,10 +29,6 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-orjson = [
-    'orjson~=3.0'
-]
-
 docs = [
     'sphinx~=9.1; python_version >= "3.12"',
     'furo~=2025.7; python_version >= "3.12"',
