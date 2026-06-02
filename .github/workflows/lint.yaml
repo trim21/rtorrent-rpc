@@ -21,7 +21,7 @@ jobs:
 
       - run: pip install -e '.[dev]'
 
-      - uses: liskin/gh-problem-matcher-wrap@v3
+      - uses: liskin/gh-problem-matcher-wrap@v4
         with:
           action: add
           linters: mypy
