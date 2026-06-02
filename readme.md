@@ -16,13 +16,7 @@ Document is hosted at https://rtorrent-rpc.readthedocs.io/ by readthedocs.
 pip install rtorrent-rpc
 ```
 
-supported extras:
 
-- `orjson`: use [orjson](https://github.com/ijl/orjson) as jsonlib
-
-```console
-pip install 'rtorrent-rpc[orjson]'
-```
 
 ## Contributing
 
