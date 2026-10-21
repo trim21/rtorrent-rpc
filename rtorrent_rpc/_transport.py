@@ -9,8 +9,8 @@ from typing import Any, Protocol
 from urllib.parse import urlparse
 
 import certifi
-from urllib3 import HTTPConnectionPool, HTTPHeaderDict, HTTPSConnectionPool
 import urllib3
+from urllib3 import HTTPConnectionPool, HTTPHeaderDict, HTTPSConnectionPool
 
 from rtorrent_rpc import _scgi as scgi
 
@@ -31,7 +31,7 @@ class BadStatusError(Exception):
         self.status = status
         self.body = body
 
-class BadAuthConfiguration(Exception):
+class AuthError(Exception):
     message: str
 
     def __init__(self, message: str):
@@ -109,7 +109,7 @@ class _HTTPTransport(Transport):
 
         if self.u.scheme == "http":
             if username or password:
-                raise BadAuthConfiguration("Username or Password supplied, refusing to use them over HTTP")
+                raise AuthError("Username or Password supplied, refusing to use them over HTTP")
             self._pool = HTTPConnectionPool(self.host, self.port, timeout=timeout)
         elif self.u.scheme == "https":
             if username and password:
@@ -147,10 +147,10 @@ class _HTTPTransport(Transport):
 
         res_body = res.data
         if res.status == 401 and self.headers.get("Authorization"):
-            raise BadAuthConfiguration("Server refused username or password")
-        elif res.status == 401 and not self.headers.get("Authorization"):
-            raise BadAuthConfiguration("Server requires Authorization, but none supplied")
-        elif res.status not in (200, 204):
+            raise AuthError("Server refused username or password")
+        if res.status == 401 and not self.headers.get("Authorization"):
+            raise AuthError("Server requires Authorization, but none supplied")
+        if res.status not in (200, 204):
             raise BadStatusError(res.status, res_body)
         return res_body
 
