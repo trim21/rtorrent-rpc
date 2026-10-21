@@ -21,6 +21,7 @@ services:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
       - ./password:/etc/nginx/password
       - ./certs:/etc/nginx/certs
+      - ./run/:/var/run/rtorrent
     ports:
       - '8080:80'
       - '8444:443'
