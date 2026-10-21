@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import base64
 import os
 import socket
 import ssl
@@ -8,7 +9,8 @@ from typing import Any, Protocol
 from urllib.parse import urlparse
 
 import certifi
-from urllib3 import HTTPConnectionPool, HTTPSConnectionPool
+from urllib3 import HTTPConnectionPool, HTTPHeaderDict, HTTPSConnectionPool
+import urllib3
 
 from rtorrent_rpc import _scgi as scgi
 
@@ -20,7 +22,6 @@ class Transport(Protocol):
 
 _VALIDATE_ENV_KEY = "PY_RTORRENT_RPC_DISABLE_TLS_CERT"
 
-
 class BadStatusError(Exception):
     status: int
     body: bytes
@@ -30,6 +31,12 @@ class BadStatusError(Exception):
         self.status = status
         self.body = body
 
+class BadAuthConfiguration(Exception):
+    message: str
+
+    def __init__(self, message: str):
+        super().__init__(f"invalid auth configuration: {message}")
+        self.message = message
 
 class _SCGITransport(Transport):
     def _connect(self) -> socket.socket:
@@ -91,43 +98,59 @@ class _SCGITcpTransport(_SCGITransport):
 class _HTTPTransport(Transport):
     _pool: HTTPConnectionPool
 
-    def __init__(self, address: str, timeout: float | None) -> None:
+    def __init__(self, address: str, username: str | None, password: str | None, timeout: float | None) -> None:
         self.address = address
         u = urlparse(address)
         self.host = u.hostname
+        self.headers = HTTPHeaderDict()
         self.port = u.port
         self.u = u
         assert self.host, "address missing host"
 
         if self.u.scheme == "http":
+            if username or password:
+                raise BadAuthConfiguration("Username or Password supplied, refusing to use them over HTTP")
             self._pool = HTTPConnectionPool(self.host, self.port, timeout=timeout)
         elif self.u.scheme == "https":
-            if os.environ.get(_VALIDATE_ENV_KEY) == "1":
-                self._pool = HTTPSConnectionPool(self.host, self.port, timeout=timeout)
+            if username and password:
+                auth_string = base64.b64encode(f"{username}:{password}".encode("utf-8")).decode("utf-8")
+                self.headers.add("Authorization", f"Basic {auth_string}")
+            if os.environ.get("_VALIDATE_ENV_KEY") == "1":
+                self._pool = HTTPSConnectionPool(
+                    self.host, self.port,
+                    timeout=timeout,
+                    cert_reqs=ssl.CERT_NONE
+                )
+
+                # Since we want to connect to an insecure host, ignore the warning about it.
+                urllib3.disable_warnings()
             else:
                 self._pool = HTTPSConnectionPool(
                     self.host,
                     self.port,
                     ca_certs=certifi.where(),
                     cert_reqs=ssl.CERT_REQUIRED,
-                    timeout=timeout,
+                    timeout=timeout
                 )
 
     def request(self, body: bytes, content_type: str | None = None) -> bytes:
-        headers = {}
         if content_type:
-            headers["content-type"] = content_type
+            self.headers.add("Content-Type", content_type)
 
         res = self._pool.request(
             method="POST",
             url=self.address,
             body=body,
             redirect=False,
-            headers=headers,
+            headers=self.headers
         )
 
         res_body = res.data
-        if res.status not in (200, 204):
+        if res.status == 401 and self.headers.get("Authorization"):
+            raise BadAuthConfiguration("Server refused username or password")
+        elif res.status == 401 and not self.headers.get("Authorization"):
+            raise BadAuthConfiguration("Server requires Authorization, but none supplied")
+        elif res.status not in (200, 204):
             raise BadStatusError(res.status, res_body)
         return res_body
 
