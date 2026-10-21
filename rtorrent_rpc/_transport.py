@@ -115,7 +115,7 @@ class _HTTPTransport(Transport):
             if username and password:
                 auth_string = base64.b64encode(f"{username}:{password}".encode("utf-8")).decode("utf-8")
                 self.headers.add("Authorization", f"Basic {auth_string}")
-            if os.environ.get("_VALIDATE_ENV_KEY") == "1":
+            if os.environ.get(_VALIDATE_ENV_KEY) == "1":
                 self._pool = HTTPSConnectionPool(
                     self.host, self.port,
                     timeout=timeout,
