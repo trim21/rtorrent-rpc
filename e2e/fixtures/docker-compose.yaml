@@ -14,3 +14,13 @@ services:
     volumes:
       - ./rtorrent.rc:/home/download/.config/rtorrent/rtorrent.rc
       - "./run/:/var/run/rtorrent"
+
+  nginx:
+    image: nginx/mainline
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./password:/etc/nginx/password
+      - ./certs:/etc/nginx/certs
+    ports:
+      - '8080:80'
+      - '8444:443'
