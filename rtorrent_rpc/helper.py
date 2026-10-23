@@ -13,10 +13,10 @@ import bencode2
 __all__ = [
     "add_completed_resume_file",
     "add_fast_resume_file",
+    "gen_auth_header",
     "get_torrent_info_hash",
     "parse_comment",
     "parse_tags",
-    "gen_auth_header",
 ]
 
 
