@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import base64
 import enum
 import hashlib
 import sys
@@ -15,6 +16,7 @@ __all__ = [
     "get_torrent_info_hash",
     "parse_comment",
     "parse_tags",
+    "gen_auth_header",
 ]
 
 
@@ -140,3 +142,38 @@ def __add_resume_file(
     data[b"libtorrent_resume"] = {b"bitfield": piece_count, b"files": files}
 
     return bencode2.bencode(data)
+
+def gen_auth_header (auth_type: str, auth_data: dict[str, str]) -> dict[str, str]:
+    """
+    Generate authorization header for common authorization types
+
+    Args:
+        auth_type (str): The type of authorization, either "Basic" or "Bearer".
+        auth_data (dict[str, str]): The authorization data. For Basic "username" and "password", for "Bearer" "token".
+
+    Returns:
+        dict[str, str]: A dict containing the header.
+    """
+
+    _type = auth_type.capitalize()
+    match _type:
+        case "Basic":
+            username = auth_data.get("username")
+            password = auth_data.get("password")
+
+            if not username or not password:
+                raise ValueError("Username or password not provided")
+
+            auth_string = base64.b64encode(f"{username}:{password}".encode("utf-8")).decode("utf-8")
+        case "Bearer":
+            token = auth_data.get("token")
+            if not token:
+                raise ValueError("Token not provided")
+
+            auth_string = token
+        case _:
+            raise ValueError("Invalid authorization type")
+
+    return {
+        "Authorization": f"{_type} {auth_string}"
+    }
