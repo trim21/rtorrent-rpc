@@ -69,8 +69,8 @@ def test_https_basic_with_wrong_auth():
         t.jsonrpc.call("system.listMethods", [])
 
 def test_https_refuse_cert():
-    os.environ["PY_RTORRENT_RPC_DISABLE_TLS_CERT"] = ""
+    os.environ["PY_RTORRENT_RPC_DISABLE_TLS_CERT"] = "0"
     t = RTorrent(address="https://127.0.0.1:8443/plain")
 
-    with pytest.raises(MaxRetryError, match="self-signed certificate"):
+    with pytest.raises(MaxRetryError, match=r"CERTIFICATE_VERIFY_FAILED.*self-signed certificate.*"):
         t.jsonrpc.call("system.listMethods", [])
