@@ -16,7 +16,7 @@ services:
       - "./run/:/var/run/rtorrent"
 
   nginx:
-    image: nginx/mainline
+    image: nginx:mainline
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
       - ./password:/etc/nginx/password
@@ -24,4 +24,4 @@ services:
       - ./run/:/var/run/rtorrent
     ports:
       - '8080:80'
-      - '8444:443'
+      - '8443:443'
