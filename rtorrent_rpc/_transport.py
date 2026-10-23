@@ -31,13 +31,6 @@ class BadStatusError(Exception):
         self.status = status
         self.body = body
 
-class AuthError(Exception):
-    message: str
-
-    def __init__(self, message: str):
-        super().__init__(f"invalid auth configuration: {message}")
-        self.message = message
-
 class _SCGITransport(Transport):
     def _connect(self) -> socket.socket:
         raise NotImplementedError
@@ -98,7 +91,7 @@ class _SCGITcpTransport(_SCGITransport):
 class _HTTPTransport(Transport):
     _pool: HTTPConnectionPool
 
-    def __init__(self, address: str, username: str | None, password: str | None, timeout: float | None) -> None:
+    def __init__(self, address: str, timeout: float | None, headers: dict | None) -> None:
         self.address = address
         u = urlparse(address)
         self.host = u.hostname
@@ -107,14 +100,13 @@ class _HTTPTransport(Transport):
         self.u = u
         assert self.host, "address missing host"
 
+        if headers:
+            for header_name, header_type in headers.items():
+                self.headers.add(header_name, header_type)
+
         if self.u.scheme == "http":
-            if username or password:
-                raise AuthError("Username or Password supplied, refusing to use them over HTTP")
             self._pool = HTTPConnectionPool(self.host, self.port, timeout=timeout)
         elif self.u.scheme == "https":
-            if username and password:
-                auth_string = base64.b64encode(f"{username}:{password}".encode("utf-8")).decode("utf-8")
-                self.headers.add("Authorization", f"Basic {auth_string}")
             if os.environ.get(_VALIDATE_ENV_KEY) == "1":
                 self._pool = HTTPSConnectionPool(
                     self.host, self.port,
@@ -146,10 +138,6 @@ class _HTTPTransport(Transport):
         )
 
         res_body = res.data
-        if res.status == 401 and self.headers.get("Authorization"):
-            raise AuthError("Server refused username or password")
-        if res.status == 401 and not self.headers.get("Authorization"):
-            raise AuthError("Server requires Authorization, but none supplied")
         if res.status not in (200, 204):
             raise BadStatusError(res.status, res_body)
         return res_body
