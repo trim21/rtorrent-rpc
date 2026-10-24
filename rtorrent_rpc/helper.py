@@ -143,7 +143,8 @@ def __add_resume_file(
 
     return bencode2.bencode(data)
 
-def gen_auth_header (auth_type: str, auth_data: dict[str, str]) -> dict[str, str]:
+
+def gen_auth_header(auth_type: str, auth_data: dict[str, str]) -> dict[str, str]:
     """
     Generate authorization header for common authorization types
 
@@ -164,7 +165,9 @@ def gen_auth_header (auth_type: str, auth_data: dict[str, str]) -> dict[str, str
             if not username or not password:
                 raise ValueError("Username or password not provided")
 
-            auth_string = base64.b64encode(f"{username}:{password}".encode("utf-8")).decode("utf-8")
+            auth_string = base64.b64encode(
+                f"{username}:{password}".encode("utf-8")
+            ).decode("utf-8")
         case "Bearer":
             token = auth_data.get("token")
             if not token:
@@ -174,6 +177,4 @@ def gen_auth_header (auth_type: str, auth_data: dict[str, str]) -> dict[str, str
         case _:
             raise ValueError("Invalid authorization type")
 
-    return {
-        "Authorization": f"{_type} {auth_string}"
-    }
+    return {"Authorization": f"{_type} {auth_string}"}

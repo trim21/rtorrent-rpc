@@ -178,7 +178,9 @@ class RTorrent:
             else:
                 self._transport = _SCGIUnixTransport(u.path, timeout=timeout)
         elif u.scheme in ("http", "https"):
-            self._transport = _HTTPTransport(address, timeout=timeout, headers=http_headers)
+            self._transport = _HTTPTransport(
+                address, timeout=timeout, headers=http_headers
+            )
         else:
             raise ValueError(f"unsupported protocol {u.scheme}")
 

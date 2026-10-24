@@ -21,6 +21,7 @@ class Transport(Protocol):
 
 _VALIDATE_ENV_KEY = "PY_RTORRENT_RPC_DISABLE_TLS_CERT"
 
+
 class BadStatusError(Exception):
     status: int
     body: bytes
@@ -29,6 +30,7 @@ class BadStatusError(Exception):
         super().__init__(f"unexpected response status code {status} {body!r}")
         self.status = status
         self.body = body
+
 
 class _SCGITransport(Transport):
     def _connect(self) -> socket.socket:
@@ -90,7 +92,9 @@ class _SCGITcpTransport(_SCGITransport):
 class _HTTPTransport(Transport):
     _pool: HTTPConnectionPool
 
-    def __init__(self, address: str, timeout: float | None, headers: dict | None) -> None:
+    def __init__(
+        self, address: str, timeout: float | None, headers: dict | None
+    ) -> None:
         self.address = address
         u = urlparse(address)
         self.host = u.hostname
@@ -108,9 +112,7 @@ class _HTTPTransport(Transport):
         elif self.u.scheme == "https":
             if os.environ.get(_VALIDATE_ENV_KEY) == "1":
                 self._pool = HTTPSConnectionPool(
-                    self.host, self.port,
-                    timeout=timeout,
-                    cert_reqs=ssl.CERT_NONE
+                    self.host, self.port, timeout=timeout, cert_reqs=ssl.CERT_NONE
                 )
 
                 # Since we want to connect to an insecure host, ignore the warning about it.
@@ -121,7 +123,7 @@ class _HTTPTransport(Transport):
                     self.port,
                     ca_certs=certifi.where(),
                     cert_reqs=ssl.CERT_REQUIRED,
-                    timeout=timeout
+                    timeout=timeout,
                 )
 
     def request(self, body: bytes, content_type: str | None = None) -> bytes:
@@ -133,7 +135,7 @@ class _HTTPTransport(Transport):
             url=self.address,
             body=body,
             redirect=False,
-            headers=self.headers
+            headers=self.headers,
         )
 
         res_body = res.data
