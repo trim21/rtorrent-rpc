@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/abravalheri/validate-pyproject
-    rev: "0.26"
+    rev: "v0.27"
     hooks:
       - id: validate-pyproject
         # Optional extra validations from SchemaStore:
@@ -27,12 +27,12 @@ repos:
       - id: fix-byte-order-marker
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.16.10
+    rev: v0.17.3
     hooks:
       - id: ruff
         args: [ --fix ]
 
   - repo: https://github.com/psf/black
-    rev: 26.5.1
+    rev: 26.10.1
     hooks:
       - id: black
