@@ -8,7 +8,9 @@ from typing import Any, Protocol
 from urllib.parse import urlparse
 
 import certifi
-from urllib3 import HTTPConnectionPool, HTTPSConnectionPool
+import urllib3
+from urllib3 import HTTPConnectionPool, HTTPHeaderDict, HTTPSConnectionPool
+from urllib3.exceptions import InsecureRequestWarning
 
 from rtorrent_rpc import _scgi as scgi
 
@@ -91,10 +93,13 @@ class _SCGITcpTransport(_SCGITransport):
 class _HTTPTransport(Transport):
     _pool: HTTPConnectionPool
 
-    def __init__(self, address: str, timeout: float | None) -> None:
+    def __init__(
+        self, address: str, timeout: float | None, headers: dict[str, str] | None
+    ) -> None:
         self.address = address
         u = urlparse(address)
         self.host = u.hostname
+        self.headers = HTTPHeaderDict(headers)
         self.port = u.port
         self.u = u
         assert self.host, "address missing host"
@@ -103,7 +108,12 @@ class _HTTPTransport(Transport):
             self._pool = HTTPConnectionPool(self.host, self.port, timeout=timeout)
         elif self.u.scheme == "https":
             if os.environ.get(_VALIDATE_ENV_KEY) == "1":
-                self._pool = HTTPSConnectionPool(self.host, self.port, timeout=timeout)
+                self._pool = HTTPSConnectionPool(
+                    self.host, self.port, timeout=timeout, cert_reqs=ssl.CERT_NONE
+                )
+
+                # Since we want to connect to an insecure host, ignore the warning about it.
+                urllib3.disable_warnings(InsecureRequestWarning)
             else:
                 self._pool = HTTPSConnectionPool(
                     self.host,
@@ -114,9 +124,9 @@ class _HTTPTransport(Transport):
                 )
 
     def request(self, body: bytes, content_type: str | None = None) -> bytes:
-        headers = {}
+        headers = self.headers.copy()
         if content_type:
-            headers["content-type"] = content_type
+            headers["Content-Type"] = content_type
 
         res = self._pool.request(
             method="POST",

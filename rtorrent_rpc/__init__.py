@@ -160,12 +160,14 @@ class RTorrent:
         address: str,
         rutorrent_compatibility: bool = True,
         timeout: float | None = 5.0,
+        http_headers: dict[str, str] | None = None,
     ):
         """
         Args:
             address: rtorrent rpc address
             rutorrent_compatibility: compatibility for ruTorrent or flood.
             timeout: socket timeout. RTorrent may hang infinitely, without timeout.
+            http_headers: headers to be set for http(s) requests.
         """
         u = urllib.parse.urlparse(address)
         if u.scheme == "scgi":
@@ -176,7 +178,9 @@ class RTorrent:
             else:
                 self._transport = _SCGIUnixTransport(u.path, timeout=timeout)
         elif u.scheme in ("http", "https"):
-            self._transport = _HTTPTransport(address, timeout=timeout)
+            self._transport = _HTTPTransport(
+                address, timeout=timeout, headers=http_headers
+            )
         else:
             raise ValueError(f"unsupported protocol {u.scheme}")
 
