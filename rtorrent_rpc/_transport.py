@@ -10,6 +10,7 @@ from urllib.parse import urlparse
 import certifi
 import urllib3
 from urllib3 import HTTPConnectionPool, HTTPHeaderDict, HTTPSConnectionPool
+from urllib3.exceptions import InsecureRequestWarning
 
 from rtorrent_rpc import _scgi as scgi
 
@@ -93,19 +94,15 @@ class _HTTPTransport(Transport):
     _pool: HTTPConnectionPool
 
     def __init__(
-        self, address: str, timeout: float | None, headers: dict | None
+        self, address: str, timeout: float | None, headers: dict[str, str] | None
     ) -> None:
         self.address = address
         u = urlparse(address)
         self.host = u.hostname
-        self.headers = HTTPHeaderDict()
+        self.headers = HTTPHeaderDict(headers)
         self.port = u.port
         self.u = u
         assert self.host, "address missing host"
-
-        if headers:
-            for header_name, header_type in headers.items():
-                self.headers.add(header_name, header_type)
 
         if self.u.scheme == "http":
             self._pool = HTTPConnectionPool(self.host, self.port, timeout=timeout)
@@ -116,7 +113,7 @@ class _HTTPTransport(Transport):
                 )
 
                 # Since we want to connect to an insecure host, ignore the warning about it.
-                urllib3.disable_warnings()
+                urllib3.disable_warnings(InsecureRequestWarning)
             else:
                 self._pool = HTTPSConnectionPool(
                     self.host,
@@ -127,15 +124,16 @@ class _HTTPTransport(Transport):
                 )
 
     def request(self, body: bytes, content_type: str | None = None) -> bytes:
+        headers = self.headers.copy()
         if content_type:
-            self.headers.add("Content-Type", content_type)
+            headers["Content-Type"] = content_type
 
         res = self._pool.request(
             method="POST",
             url=self.address,
             body=body,
             redirect=False,
-            headers=self.headers,
+            headers=headers,
         )
 
         res_body = res.data

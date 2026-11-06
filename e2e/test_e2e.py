@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 
 import pytest
@@ -32,15 +31,15 @@ def test_http_plain_no_auth():
     assert t.jsonrpc.call("system.listMethods", [])
 
 
-def test_https_plain_no_auth():
-    os.environ["PY_RTORRENT_RPC_DISABLE_TLS_CERT"] = "1"
+def test_https_plain_no_auth(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("PY_RTORRENT_RPC_DISABLE_TLS_CERT", "1")
     t = RTorrent(address="https://127.0.0.1:8443/plain")
 
     assert t.jsonrpc.call("system.listMethods", [])
 
 
-def test_https_basic_without_auth():
-    os.environ["PY_RTORRENT_RPC_DISABLE_TLS_CERT"] = "1"
+def test_https_basic_without_auth(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("PY_RTORRENT_RPC_DISABLE_TLS_CERT", "1")
     t = RTorrent(address="https://127.0.0.1:8443/basic")
 
     with pytest.raises(BadStatusError, match=r"unexpected response status code 401.*"):
@@ -62,8 +61,8 @@ def test_auth_header_other():
         gen_auth_header("Other", auth_data={"username": "test", "password": "test"})
 
 
-def test_https_basic_with_ok_auth():
-    os.environ["PY_RTORRENT_RPC_DISABLE_TLS_CERT"] = "1"
+def test_https_basic_with_ok_auth(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("PY_RTORRENT_RPC_DISABLE_TLS_CERT", "1")
     t = RTorrent(
         address="https://127.0.0.1:8443/basic",
         http_headers={"Authorization": "Basic dGVzdDp0ZXN0"},
@@ -72,8 +71,8 @@ def test_https_basic_with_ok_auth():
     assert t.jsonrpc.call("system.listMethods", [])
 
 
-def test_https_basic_with_wrong_auth():
-    os.environ["PY_RTORRENT_RPC_DISABLE_TLS_CERT"] = "1"
+def test_https_basic_with_wrong_auth(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("PY_RTORRENT_RPC_DISABLE_TLS_CERT", "1")
     t = RTorrent(
         address="https://127.0.0.1:8443/basic",
         http_headers={"Authorization": "Basic WRONG"},
@@ -83,8 +82,8 @@ def test_https_basic_with_wrong_auth():
         t.jsonrpc.call("system.listMethods", [])
 
 
-def test_https_refuse_cert():
-    os.environ["PY_RTORRENT_RPC_DISABLE_TLS_CERT"] = "0"
+def test_https_refuse_cert(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("PY_RTORRENT_RPC_DISABLE_TLS_CERT", "0")
     t = RTorrent(address="https://127.0.0.1:8443/plain")
 
     with pytest.raises(
