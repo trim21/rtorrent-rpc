@@ -1,5 +1,5 @@
 [build-system]
-requires = ["flit-core==4.1.0"]
+requires = ["flit-core==4.2.0"]
 build-backend = "flit_core.buildapi"
 
 [project]
@@ -37,10 +37,10 @@ docs = [
 dev = [
     "pytest==9.2.0",
     "pytest-github-actions-annotate-failures==0.4.2",
-    "coverage==7.16.2",
-    'pre-commit==4.6.2; python_version >= "3.12"',
+    "coverage==7.17.2",
+    'pre-commit==4.7.0; python_version >= "3.12"',
     'sphinx-autobuild==2025.8.25; python_version >= "3.12"',
-    'mypy==2.4.0; python_version >= "3.12"',
+    'mypy==2.4.1; python_version >= "3.12"',
 ]
 
 [project.urls]
