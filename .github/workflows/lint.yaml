@@ -14,12 +14,13 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: actions/setup-python@v7
+      - uses: astral-sh/setup-uv@v10.3.3
         with:
           python-version: '3.12'
-          cache: pip
+          enable-cache: true
+          activate-environment: true
 
-      - run: pip install -e '.[dev]'
+      - run: uv sync --locked --extra dev
 
       - uses: liskin/gh-problem-matcher-wrap@v4
         with:
@@ -34,11 +35,4 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: actions/setup-python@v7
-        with:
-          python-version: '3.12'
-          cache: pip
-
-      - run: pip install -e '.[dev]'
-
-      - uses: trim21/actions/pre-commit@master
+      - uses: trim21/actions/prek@master

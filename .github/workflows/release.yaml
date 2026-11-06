@@ -17,14 +17,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-python@v7
-        with:
-          python-version: '3.x'
+      - uses: astral-sh/setup-uv@v10.3.3
 
-      - run: pipx run flit publish
+      - run: uv build
+
+      - run: uv publish
         env:
-          FLIT_USERNAME: '__token__'
-          FLIT_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+          UV_PUBLISH_TOKEN: ${{ secrets.PYPI_TOKEN }}
 
       - name: Get Previous Tag
         id: tag

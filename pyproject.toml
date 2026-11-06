@@ -19,7 +19,7 @@ classifiers = [
     'Programming Language :: Python :: 3 :: Only',
 ]
 
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 
 dependencies = [
     'urllib3~=2.2',
@@ -50,7 +50,7 @@ Homepage = "https://github.com/trim21/rtorrent-rpc"
 addopts = '-rav -Werror'
 
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.11"
 disallow_untyped_defs = true
 ignore_missing_imports = true
 warn_return_any = false
@@ -60,10 +60,10 @@ show_error_codes = true
 platform = 'unix'
 
 [tool.black]
-target-version = ['py310']
+target-version = ['py311']
 
 [tool.ruff]
-target-version = "py310"
+target-version = "py311"
 
 [tool.ruff.lint]
 select = [

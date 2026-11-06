@@ -14,11 +14,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-python@v7
+      - uses: astral-sh/setup-uv@v10.3.3
         with:
-          python-version: "3.x"
+          python-version: '3.12'
+          enable-cache: true
+          activate-environment: true
 
-      - run: pipx run flit build
+      - run: uv build
 
       - name: Check Files
-        run: pipx run twine check --strict dist/*
+        run: uvx twine check --strict dist/*
