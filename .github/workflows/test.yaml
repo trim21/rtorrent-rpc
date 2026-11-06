@@ -14,15 +14,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+        python: ["3.11", "3.12", "3.13", "3.14", "3.15"]
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-python@v7
+      - uses: astral-sh/setup-uv@v10.3.3
         with:
           python-version: ${{ matrix.python }}
-          cache: pip
+          enable-cache: true
+          activate-environment: true
 
-      - run: pip install -e '.[dev]'
+      - run: uv sync --locked --extra dev
 
       - name: run tests
         run: coverage run -a -m pytest tests
@@ -36,19 +37,20 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+        python: ["3.11", "3.12", "3.13", "3.14", "3.15"]
 
     steps:
       - uses: actions/checkout@v7
       - run: docker compose up -d
         working-directory: ./e2e/fixtures
 
-      - uses: actions/setup-python@v7
+      - uses: astral-sh/setup-uv@v10.3.3
         with:
           python-version: ${{ matrix.python }}
-          cache: pip
+          enable-cache: true
+          activate-environment: true
 
-      - run: pip install -e '.[dev]'
+      - run: uv sync --locked --extra dev
 
       - run: docker compose ps
         working-directory: ./e2e/fixtures
