@@ -1125,7 +1125,7 @@ wheels = [
 
 [[package]]
 name = "rtorrent-rpc"
-version = "0.9.7"
+version = "0.10.1"
 source = { editable = "." }
 dependencies = [
     { name = "bencode2" },
