@@ -18,6 +18,7 @@ from rtorrent_rpc import _scgi as scgi
 class Transport(Protocol):
     def request(self, body: bytes, content_type: str | None = None) -> bytes:
         """encode request data and return response body"""
+        ...
 
 
 _VALIDATE_ENV_KEY = "PY_RTORRENT_RPC_DISABLE_TLS_CERT"

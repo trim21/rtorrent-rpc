@@ -9,7 +9,7 @@ on:
       - master
 
 jobs:
-  mypy:
+  ty:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -22,13 +22,24 @@ jobs:
 
       - run: uv sync --locked --extra dev
 
-      - uses: liskin/gh-problem-matcher-wrap@v4
-        with:
-          action: add
-          linters: mypy
+      - name: ty
+        run: ty check . --output-format=github
 
-      - name: mypy
-        run: mypy --show-column-numbers rtorrent_rpc
+  pyright:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          python-version: '3.12'
+          enable-cache: true
+
+      - run: uv sync --locked --extra dev
+
+      - uses: jakebailey/pyright-action@v3.0.2
+        with:
+          version: "1.1.414"
 
   pre-commit:
     runs-on: ubuntu-latest

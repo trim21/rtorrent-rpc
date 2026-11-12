@@ -40,7 +40,7 @@ dev = [
     "coverage==7.17.2",
     'pre-commit==4.7.0; python_version >= "3.12"',
     'sphinx-autobuild==2025.8.25; python_version >= "3.12"',
-    'mypy==2.4.1; python_version >= "3.12"',
+    'ty==0.0.100',
 ]
 
 [project.urls]
@@ -49,15 +49,10 @@ Homepage = "https://github.com/trim21/rtorrent-rpc"
 [tool.pytest.ini_options]
 addopts = '-rav -Werror'
 
-[tool.mypy]
-python_version = "3.11"
-disallow_untyped_defs = true
-ignore_missing_imports = true
-warn_return_any = false
-warn_unused_configs = true
-show_error_codes = true
-
-platform = 'unix'
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+pythonVersion = "3.11"
 
 [tool.black]
 target-version = ['py311']
