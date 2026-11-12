@@ -13,7 +13,7 @@ class _RecordHeaderHandler(BaseHTTPRequestHandler):
 
     def do_POST(self) -> None:
         self.rfile.read(int(self.headers.get("content-length", "0")))
-        seen = {}
+        seen: dict[str, list[str]] = {}
         for name in ("Content-Type", "X-Api-Key", "Authorization"):
             values = self.headers.get_all(name)
             if values:

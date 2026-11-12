@@ -12,7 +12,6 @@ from typing import (
     Literal,
     Protocol,
     TypeVar,
-    cast,
 )
 from urllib.parse import quote
 from xmlrpc.client import dumps as xml_dumps
@@ -65,9 +64,11 @@ class _DirectoryRpc(Protocol):
 class _CustomSet(Protocol):
     def __call__(self, info_hash: str, key: str, /) -> str:
         """get download's custom value"""
+        ...
 
     def set(self, info_hash: str, key: str, value: str, /) -> int:
         """set download's custom value"""
+        ...
 
 
 class _DownloadRpc(Protocol):
@@ -78,14 +79,17 @@ class _DownloadRpc(Protocol):
 
     def multicall2(self, _: Literal[""], view: str, *commands: str) -> Iterable[Any]:
         """run multiple rpc calls"""
+        ...
 
     @property
     def directory_base(self) -> _DirectoryRpc:
         """base directory"""
+        ...
 
     @property
     def directory(self) -> _DirectoryRpc:
         """directory"""
+        ...
 
     @property
     def custom(self) -> _CustomSet: ...
@@ -105,9 +109,11 @@ class _TrackerRpc(Protocol):
         self, info_hash: str, _: Literal[""], *commands: str
     ) -> Iterable[Any]:
         """run multiple rpc calls"""
+        ...
 
     def is_enabled(self, tracker_id: str) -> int:
         """tracker_id is in format ``{info_hash}:t{index}``"""
+        ...
 
 
 class _FileRpc(Protocol):
@@ -117,6 +123,7 @@ class _FileRpc(Protocol):
         self, info_hash: str, _: Literal[""], *commands: str
     ) -> Iterable[Any]:
         """run multiple rpc calls"""
+        ...
 
 
 class RTorrent:
@@ -265,7 +272,7 @@ class RTorrent:
         for key, value in extra_custom.items():
             params.append(f"d.custom.set={key},{json.dumps(value)}")
 
-        self.rpc.load.raw_start_verbose(*params)  # type: ignore
+        self.rpc.load.raw_start_verbose(*params)
 
     def stop_torrent(self, info_hash: str) -> None:
         """
@@ -1249,7 +1256,7 @@ class _SCGIServerProxy(xmlrpc.client.ServerProxy):
 
         # Feed some junk in here, but we'll fix it afterwards
         super().__init__(
-            cast("str", urllib.parse.urlunparse(u._replace(scheme="http"))),
+            urllib.parse.urlunparse(u._replace(scheme="http")),
             transport=transport,
             **kwargs,
         )
